@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
 import { AuthService } from './auth.service';
 import {
@@ -14,7 +14,6 @@ import {
 import { Roles } from './role.decorator';
 import { CurrentUser } from './user.decorator';
 import {
-  ApiBasicAuth,
   ApiOkResponse,
   ApiOperation,
   ApiSecurity,
@@ -67,7 +66,6 @@ export class AuthResolver {
     @CurrentUser() user: User,
     @Body() input: ChangePasswordInput,
   ): Promise<ChangePasswordOutput> {
-    console.log(user);
     return this.authService.changePassword(user, input);
   }
 }

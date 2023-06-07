@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Professor } from 'src/entities/professor.entity';
+import { Student } from 'src/entities/student.entity';
 import { User } from 'src/entities/user.entity';
+import { StudentModule } from 'src/modules/student/student.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,7 +18,7 @@ import { User } from 'src/entities/user.entity';
       username: 'postgres',
       password: 'password',
       database: 'webcode',
-      entities: [User],
+      entities: [User, Student, Professor],
       synchronize: true,
       ...(process.env.NODE_ENV === 'production'
         ? {
@@ -29,7 +32,6 @@ import { User } from 'src/entities/user.entity';
           }
         : {}),
     }),
-    // DonHangModule,
   ],
 })
 export class DatabaseModule {}

@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
       );
       if (!roles) return true;
       const request = context.switchToHttp().getRequest();
-      console.log(request.headers['authorization']);
+
       const accessToken = request.headers['authorization'];
       const decoded = verify(
         accessToken,
