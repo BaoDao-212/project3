@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CourseStudent } from 'src/entities/contant/courseStudent';
+import { LessonStudent } from 'src/entities/contant/lessonStudent';
+import { Course } from 'src/entities/course.entity';
+import { Lesson } from 'src/entities/lesson.entity';
 import { Professor } from 'src/entities/professor.entity';
 import { Student } from 'src/entities/student.entity';
 import { User } from 'src/entities/user.entity';
-import { StudentModule } from 'src/modules/student/student.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,7 +21,15 @@ import { StudentModule } from 'src/modules/student/student.module';
       username: 'postgres',
       password: 'password',
       database: 'webcode',
-      entities: [User, Student, Professor],
+      entities: [
+        User,
+        Student,
+        Professor,
+        Lesson,
+        Course,
+        CourseStudent,
+        LessonStudent,
+      ],
       synchronize: true,
       ...(process.env.NODE_ENV === 'production'
         ? {

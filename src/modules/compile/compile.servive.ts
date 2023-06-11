@@ -30,9 +30,9 @@ export class CompileService {
       let res;
       const decodedCode = decodeURIComponent(code);
       if (language === Language.C) {
-        res = await c.runSource(decodeURIComponent(t));
+        res = await c.runSource(decodedCode);
       } else if (language === Language.Cpp) {
-        res = await cpp.runSource(decodedCode);
+        res = await cpp.runSource(decodedCode, { stdin: '' });
       } else if (language === Language.Python) {
         res = await python.runSource(decodedCode);
       } else if (language === Language.Java) {

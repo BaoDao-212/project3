@@ -20,7 +20,7 @@ export class Professor extends BaseEntity {
   @OneToOne((type) => User, (user) => user.id)
   user: User;
 
-  @Column()
+  @Column({ nullable: true })
   @ApiProperty()
   academicLevel: string;
 }

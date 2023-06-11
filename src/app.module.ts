@@ -9,6 +9,8 @@ import { StudentModule } from './modules/student/student.module';
 import { ProfessorModule } from './modules/professor/professor.module';
 import { UserModule } from './modules/user/user.module';
 import { CompileModule } from './modules/compile/compile.module';
+import { CourseModule } from './modules/course/course.module';
+import { LessonModule } from './modules/lesson/lesson.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { CompileModule } from './modules/compile/compile.module';
     ProfessorModule,
     UserModule,
     CompileModule,
+    CourseModule,
+    LessonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

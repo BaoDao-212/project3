@@ -1,26 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from './base.entity';
-import {
-  PrimaryGeneratedColumn,
-  Column,
-  Entity,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { Professor } from './professor.entity';
+import { PrimaryGeneratedColumn, Column, Entity, ManyToOne } from 'typeorm';
+import { IsBoolean, IsString } from 'class-validator';
 import { Course } from './course.entity';
 export enum Type {
   MultipleChoice = 'MultipleChoice',
   Code = 'Code',
 }
-@Entity({ name: 'course' })
+export class Theory {
+  @ApiProperty()
+  @IsString()
+  theory: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  isText: boolean;
+}
+
+@Entity({ name: 'lesson' })
 export class Lesson extends BaseEntity {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;
 
   @ApiProperty()
-  @ManyToOne((type) => Course, (course) => course.id)
+  @ManyToOne(() => Course, (course) => course.lessons)
   course: Course;
 
   @Column()
@@ -30,6 +34,10 @@ export class Lesson extends BaseEntity {
   @Column({ nullable: true })
   @ApiProperty()
   type: Type;
+
+  @Column({ type: 'jsonb', array: false, default: () => "'[]'" })
+  @ApiProperty()
+  theory: Array<Theory>;
 
   @Column({ nullable: true })
   @ApiProperty()

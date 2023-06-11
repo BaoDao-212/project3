@@ -1,14 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, MinLength } from 'class-validator';
+import { IsString } from 'class-validator';
+import { Language } from 'src/entities/course.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
 
 export class CreateCourseInput {
-  @ApiProperty({ description: 'user' })
+  @ApiProperty({ description: 'name of course' })
   @IsString()
-  userId: number;
+  name: string;
 
-  @ApiProperty({ description: 'academic level' })
+  @ApiProperty({ description: 'language of this course' })
+  language: Language;
+
+  @ApiProperty({ description: 'description of this course' })
   @IsString()
-  academicLevel: string;
+  description: string;
+
+  @ApiProperty({ description: 'time of this course (hours)' })
+  @IsString()
+  time: number;
+
+  @ApiProperty({ description: 'number lesson of this course (lesson)' })
+  @IsString()
+  numberLesson: number;
 }
 export class CreateCourseOutput extends CoreOutput {}

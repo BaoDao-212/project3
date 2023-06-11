@@ -1,5 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateUserInput, CreateUserOutput } from './student.dto';
 import { StudentService } from './student.servive';
 import { Roles } from '../auth/role.decorator';
@@ -12,7 +17,7 @@ export class StudentResolver {
   @ApiOperation({
     summary: 'Create User',
   })
-  @Roles(['Any'])
+  @Roles(['Any']) //Any
   @Post('create')
   @ApiOkResponse({ type: CreateUserOutput })
   async registerUser(
@@ -20,4 +25,5 @@ export class StudentResolver {
   ): Promise<CreateUserOutput> {
     return this.StudentService.createUser(input);
   }
+  // async xoasinhvien(@Body() input )
 }

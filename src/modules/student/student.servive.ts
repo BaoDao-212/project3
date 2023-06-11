@@ -55,7 +55,6 @@ export class StudentService {
         class: input.class,
         user,
       });
-
       await this.studentRepo.save(userH);
       return {
         ok: true,

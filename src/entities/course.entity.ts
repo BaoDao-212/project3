@@ -6,8 +6,10 @@ import {
   Entity,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Professor } from './professor.entity';
+import { Lesson } from './lesson.entity';
 export enum Language {
   Cpp = 'Cpp',
   C = 'C',
@@ -25,6 +27,10 @@ export class Course extends BaseEntity {
   @OneToOne((type) => Professor, (pro) => pro.id)
   professor: Professor;
 
+  @ApiProperty()
+  @OneToMany(() => Lesson, (lesson) => lesson.course)
+  lessons: Lesson[];
+
   @Column()
   @ApiProperty()
   name: string;
@@ -36,4 +42,12 @@ export class Course extends BaseEntity {
   @Column({ nullable: true })
   @ApiProperty()
   description: string;
+
+  @Column({ nullable: true })
+  @ApiProperty()
+  numberLesson: number;
+
+  @Column({ nullable: true })
+  @ApiProperty()
+  time: number;
 }
