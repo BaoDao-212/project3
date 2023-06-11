@@ -1,6 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CourseStudent } from 'src/entities/contant/courseStudent';
+import { LessonStudent } from 'src/entities/contant/lessonStudent';
+import { Course } from 'src/entities/course.entity';
+import { Lesson } from 'src/entities/lesson.entity';
+import { Professor } from 'src/entities/professor.entity';
+import { Student } from 'src/entities/student.entity';
 import { User } from 'src/entities/user.entity';
 @Module({
   imports: [
@@ -15,7 +21,15 @@ import { User } from 'src/entities/user.entity';
       username: 'postgres',
       password: 'password',
       database: 'webcode',
-      entities: [User],
+      entities: [
+        User,
+        Student,
+        Professor,
+        Lesson,
+        Course,
+        CourseStudent,
+        LessonStudent,
+      ],
       synchronize: true,
       ...(process.env.NODE_ENV === 'production'
         ? {
@@ -29,7 +43,6 @@ import { User } from 'src/entities/user.entity';
           }
         : {}),
     }),
-    // DonHangModule,
   ],
 })
 export class DatabaseModule {}

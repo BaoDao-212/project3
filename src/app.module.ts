@@ -5,6 +5,12 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/postgresql.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { getConfiguration } from './modules/common/config/config';
+import { StudentModule } from './modules/student/student.module';
+import { ProfessorModule } from './modules/professor/professor.module';
+import { UserModule } from './modules/user/user.module';
+import { CompileModule } from './modules/compile/compile.module';
+import { CourseModule } from './modules/course/course.module';
+import { LessonModule } from './modules/lesson/lesson.module';
 
 @Module({
   imports: [
@@ -15,6 +21,12 @@ import { getConfiguration } from './modules/common/config/config';
     }),
     DatabaseModule,
     AuthModule,
+    StudentModule,
+    ProfessorModule,
+    UserModule,
+    CompileModule,
+    CourseModule,
+    LessonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

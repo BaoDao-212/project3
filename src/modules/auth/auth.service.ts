@@ -20,13 +20,60 @@ import {
   ACCESS_TOKEN_EXPIRED_IN,
   ACCESS_TOKEN_SECRET,
 } from '../common/constants/constants';
+// import { cpp, java, python, c } from 'compile-run';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    // const sourcecode = `print("Hell0 W0rld!")`;
+    // let resultPromise = python.runSource(sourcecode);
+    // resultPromise
+    //   .then((result) => {
+    //     console.log(result);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    // const sourcecode = `#include <iostream>
+    // using namespace std;
+    // int main() {
+    //     cout << "Xin chào! Đây là chương trình C++ đầu tiên của bạn." << endl;
+    //     // Thêm mã của bạn tại đây
+    //     return 0;
+    // }
+    // `;
+    // let resultPromise = cpp.runSource(sourcecode);
+    // resultPromise
+    //   .then((result) => {
+    //     console.log(result);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    //   const sourcecode = `public class SumCalculator {
+    //     public static void main(String[] args) {
+    //         int number1 = 5;
+    //         int number2 = 10;
+    //         int sum = calculateSum(number1, number2);
+    //         System.out.println("Tổng của hai số là: " + sum);
+    //     }
+    //     public static int calculateSum(int a, int b) {
+    //         return a + b;
+    //     }
+    // }
+    // `;
+    // let resultPromise = java.runSource(sourcecode);
+    // resultPromise
+    //   .then((result) => {
+    //     console.log(result);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+  }
 
   // TODO: thêm kiểm tra opt gửi về điện thoại
   async registerUser({
@@ -71,9 +118,12 @@ export class AuthService {
         },
         select: ['id', 'password'],
       });
-      if (!user) return createError('Input', 'Số điện thoại không phù hợp');
+
+      if (!user)
+        return createError('Input', 'Người dùng không tồn tại trên hệ thống');
       if (!(await user.checkPassword(password)))
         return createError('Input', 'Mật khẩu không đúng');
+
       const accessToken = sign(
         {
           userId: user.id,
@@ -83,6 +133,7 @@ export class AuthService {
           expiresIn: this.configService.get<string>(ACCESS_TOKEN_EXPIRED_IN),
         },
       );
+
       return {
         ok: true,
         accessToken,

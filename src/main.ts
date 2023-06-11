@@ -1,9 +1,11 @@
 import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 import { setupSwagger } from './setup-swagger';
 import { ConfigService } from '@nestjs/config';
+import { ApiExceptionFilter } from './common/api-exception.filter';
+import { ApiTransformInterceptor } from './common/api.transform';
 
 const SERVER_PORT = process.env.SERVER_PORT;
 async function bootstrap() {
@@ -15,6 +17,11 @@ async function bootstrap() {
   const config = app.get(ConfigService);
 
   app.enableCors();
+  // execption
+  // app.useGlobalFilters(new ApiExceptionFilter(app.get(LoggerService)));
+  // api interceptor
+  app.useGlobalInterceptors(new ApiTransformInterceptor(new Reflector()));
+
   // swagger
   setupSwagger(app);
   // start
