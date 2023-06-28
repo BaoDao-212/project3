@@ -5,6 +5,7 @@ import {
   Column,
   Entity,
   OneToOne,
+  ManyToOne,
   JoinColumn,
   OneToMany,
 } from 'typeorm';
@@ -24,12 +25,12 @@ export class Course extends BaseEntity {
 
   @ApiProperty()
   @JoinColumn()
-  @OneToOne((type) => Professor, (pro) => pro.id)
+  @ManyToOne(() => Professor, (pro) => pro.id)
   professor: Professor;
 
   @ApiProperty()
   @OneToMany(() => Lesson, (lesson) => lesson.course)
-  lessons: Lesson[];
+  lessons?: Lesson[];
 
   @Column()
   @ApiProperty()

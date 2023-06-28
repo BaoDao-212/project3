@@ -34,7 +34,6 @@ export class CourseStudent extends BaseEntity {
     (lessonStudents) => lessonStudents.courseStudent,
   )
   lessonStudents: LessonStudent[];
-
   @Column()
   @ApiProperty()
   numberCompleteLesson: number;

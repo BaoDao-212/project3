@@ -15,18 +15,18 @@ export class CompileService {
 
   async runCode(input: RunCodeInput): Promise<RunCodeOutput> {
     try {
-      const { code, language, inputArray, inputString } = input;
-      const t = encodeURIComponent(
-        `#include <stdio.h>
-        int main() {
-            int a=0, b=0, sum;
-            sum = a + b;
-            printf("Tổng hai số là: %d\\n", sum);
-            return 0;
-        }
-        `,
-      );
-      console.log(t);
+      const { code, language, inputString } = input;
+      // const t = encodeURIComponent(
+      //   `#include <stdio.h>
+      //   int main() {
+      //       int a=0, b=0, sum;
+      //       sum = a + b;
+      //       printf("Tổng hai số là: %d\\n", sum);
+      //       return 0;
+      //   }
+      //   `,
+      // );
+      // console.log(t);
       let res;
       const decodedCode = decodeURIComponent(code);
       if (language === Language.C) {
@@ -39,7 +39,6 @@ export class CompileService {
         res = await java.runSource(decodedCode);
       }
       console.log(res);
-
       return {
         ok: true,
         cpuUsage: res.cpuUsage,

@@ -6,7 +6,6 @@ import { FirebaseService } from '../firebase/firebase.service';
 export class UploadService {
   constructor(private readonly firebaseService: FirebaseService) {}
   uploadFile(file: Express.Multer.File, storagePath: string) {
-    console.log(storagePath);
     return this.firebaseService.uploadFile(file, storagePath);
   }
   uploadFiles(files: Express.Multer.File[], storagePath: string) {

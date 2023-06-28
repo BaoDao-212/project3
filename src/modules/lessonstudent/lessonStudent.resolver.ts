@@ -11,10 +11,12 @@ import { User } from 'src/entities/user.entity';
 import {
   CreateLessonStudentInput,
   CreateLessonStudentOutput,
+  UpdateLessonStudentInput,
+  UpdateLessonStudentOutput,
 } from './lessonStudent.dto';
 import { LessonStudentService } from './lessonStudent.servive';
 
-@ApiTags('Lesson')
+@ApiTags('LessonStudent')
 @Controller('/lessonStudent')
 @ApiSecurity('admin')
 export class LessonStudentResolver {
@@ -25,10 +27,22 @@ export class LessonStudentResolver {
   @Roles(['Any'])
   @Post('create')
   @ApiOkResponse({ type: CreateLessonStudentOutput })
-  async createlesson(
+  async createLesson(
     @CurrentUser() user: User,
     @Body() input: CreateLessonStudentInput,
   ): Promise<CreateLessonStudentOutput> {
     return this.lessonStudentService.createLessonStudent(user, input);
+  }
+  @ApiOperation({
+    summary: 'Update lesson student',
+  })
+  @Roles(['Any'])
+  @Post('change')
+  @ApiOkResponse({ type: UpdateLessonStudentOutput })
+  async updateLesson(
+    @CurrentUser() user: User,
+    @Body() input: UpdateLessonStudentInput,
+  ): Promise<CreateLessonStudentOutput> {
+    return this.lessonStudentService.updateLessonStudent(user, input);
   }
 }

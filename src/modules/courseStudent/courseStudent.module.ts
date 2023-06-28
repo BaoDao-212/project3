@@ -2,14 +2,15 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Professor } from 'src/entities/professor.entity';
 import { User } from 'src/entities/user.entity';
-import { LessonStudentResolver } from './lessonStudent.resolver';
 import { Course } from 'src/entities/course.entity';
 import { Lesson } from 'src/entities/lesson.entity';
-import { LessonStudentService } from './lessonStudent.servive';
 import { LessonStudent } from 'src/entities/contant/lessonStudent';
 import { CompileResolver } from '../compile/compile.resolver';
 import { CompileService } from '../compile/compile.servive';
 import { CourseStudent } from 'src/entities/contant/courseStudent';
+import { CourseStudentResolver } from './courseStudent.resolver';
+import { CourseStudentService } from './courseStudent.servive';
+import { Student } from 'src/entities/student.entity';
 
 @Module({
   imports: [
@@ -18,16 +19,17 @@ import { CourseStudent } from 'src/entities/contant/courseStudent';
       Professor,
       Course,
       Lesson,
+      Student,
       LessonStudent,
       CourseStudent,
     ]),
   ],
   providers: [
-    LessonStudentResolver,
-    LessonStudentService,
+    CourseStudentResolver,
+    CourseStudentService,
     CompileResolver,
     CompileService,
   ],
-  controllers: [LessonStudentResolver],
+  controllers: [CourseStudentResolver],
 })
-export class LessonStudentModule {}
+export class CourseStudentModule {}

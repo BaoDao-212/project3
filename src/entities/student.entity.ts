@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { IsNumber, IsString } from 'class-validator';
 
 @Entity({ name: 'student' })
 export class Student extends BaseEntity {
@@ -17,14 +18,16 @@ export class Student extends BaseEntity {
 
   @ApiProperty()
   @JoinColumn()
-  @OneToOne((type) => User, (user) => user.id)
+  @OneToOne(() => User, (user) => user.id)
   user: User;
 
   @Column()
   @ApiProperty()
+  @IsString()
   class: string;
 
   @Column({ nullable: true, default: 0 })
   @ApiProperty()
+  @IsNumber()
   averageMark: number;
 }

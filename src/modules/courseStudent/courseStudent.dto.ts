@@ -1,30 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { Language } from 'src/entities/course.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
-import { RunCodeOutput } from '../compile/compile.dto';
 
-export class CreateLessonStudentInput {
+export class CreateCourseStudentInput {
   @ApiProperty({ description: 'course id of lesson' })
   @IsString()
-  courseStudentId: number;
-
-  @ApiProperty({ description: 'lesson id ' })
-  @IsString()
-  lessonId: number;
+  courseId: number;
 }
-export class CreateLessonStudentOutput extends CoreOutput {}
+export class CreateCourseStudentOutput extends CoreOutput {}
 
-export class UpdateLessonStudentInput {
+export class UpdateCourseStudentInput {
   @ApiProperty({ description: 'code current id of lesson' })
   @IsString()
   codeCurrent: string;
 
   @ApiProperty({ description: 'lesson id ' })
   @IsString()
-  lessonStudentId: number;
+  courseStudentId: number;
 }
-export class UpdateLessonStudentOutput extends CoreOutput {
+export class UpdateCourseStudentOutput extends CoreOutput {
   @ApiProperty({ description: 'error ' })
   @IsString()
   stderr: string;
