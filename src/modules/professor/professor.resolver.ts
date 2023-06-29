@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -6,8 +6,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../auth/role.decorator';
-import { CreateProfessorInput, CreateProfessorOutput } from './professor.dto';
+import {  ChangeProfessorProFileInPut, ChangeProfessorProFileOutput, CreateProfessorInput, CreateProfessorOutput, GetProfessorProfileOutput } from './professor.dto';
 import { ProfessorService } from './professor.servive';
+import { User } from 'src/entities/user.entity';
+import { CurrentUser } from '../auth/user.decorator';
 
 @ApiTags('Professor')
 @Controller('/professor')
@@ -24,5 +26,27 @@ export class ProfessorResolver {
     @Body() input: CreateProfessorInput,
   ): Promise<CreateProfessorOutput> {
     return this.professorService.createUser(input);
+  }
+  @ApiOperation({
+    summary: 'Profile professor',
+  })
+  @Roles(['Professor'])
+  @Get('profile')
+  @ApiOkResponse({ type: GetProfessorProfileOutput })
+  async getInfo(@CurrentUser() input: User) {
+    return this.professorService.getProfessorProfile(input);
+  }
+  
+  @ApiOperation({
+    summary: 'Change Profile professor',
+  })
+  @Roles(['Professor'])
+  @Post('/change-profile')
+  @ApiOkResponse({ type: ChangeProfessorProFileOutput })
+  async changechangeProfileProfessorProfile(
+    @CurrentUser() user: User,
+    @Body() input: ChangeProfessorProFileInPut,
+  ) {
+    return this.professorService.changeProfileProfessor(user,input);
   }
 }

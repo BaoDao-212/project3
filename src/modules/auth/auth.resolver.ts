@@ -10,6 +10,8 @@ import {
   RegisterUserOutput,
   ChangePasswordInput,
   ChangePasswordOutput,
+  ForgotPasswordOutput,
+  ForgotPasswordInput,
 } from './dto/auth.dto';
 import { Roles } from './role.decorator';
 import { CurrentUser } from './user.decorator';
@@ -67,5 +69,18 @@ export class AuthResolver {
     @Body() input: ChangePasswordInput,
   ): Promise<ChangePasswordOutput> {
     return this.authService.changePassword(user, input);
+  }
+
+  @ApiOperation({
+    summary: 'For Get Password',
+  })
+  @Post('forgot-password')
+  @ApiOkResponse({ type: ForgotPasswordOutput })
+  // @ApiSecurity('admin')
+  
+  async forgetPassword(
+    @Body() input: ForgotPasswordInput,
+  ): Promise<ForgotPasswordOutput> {
+    return this.authService.forgotPassword(input);
   }
 }

@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, MinLength } from 'class-validator';
+import { IsString, MinLength, isString } from 'class-validator';
+import { Professor } from 'src/entities/professor.entity';
+import { User } from 'src/entities/user.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
 
 export class CreateProfessorInput {
@@ -12,3 +14,16 @@ export class CreateProfessorInput {
   academicLevel: string;
 }
 export class CreateProfessorOutput extends CoreOutput {}
+
+
+export class GetProfessorProfileOutput extends CoreOutput{
+  @ApiProperty({ description: 'professor' })
+  professor?: Professor;
+}
+export class ChangeProfessorProFileInPut{
+  @ApiProperty({ description: 'new academicLevel' })
+  @IsString()
+  newAcademicLevel: string;
+}
+export class ChangeProfessorProFileOutput extends CoreOutput{
+}
