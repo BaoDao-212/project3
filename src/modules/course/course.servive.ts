@@ -33,6 +33,9 @@ export class CourseService {
             id: professor.id,
           },
         },
+        relations: {
+          user: true,
+        },
       });
       if (!pro) return createError('Input', 'Professor không hợp lệ');
       if (course) return createError('Input', 'Khóa học này đã tồn tại');
@@ -42,17 +45,18 @@ export class CourseService {
           'Số tiết học hoặc tổng số giờ học không hợp lệ',
         );
       const CourseH = this.courseRepo.create({
+        name,
         description,
         language,
-        numberLesson,
         professor: pro,
         time,
-        name,
-        lessons: [],
+        numberLesson,
       });
       console.log(CourseH);
 
       await this.courseRepo.save(CourseH);
+      console.log('12312312312312');
+
       return {
         ok: true,
       };

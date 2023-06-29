@@ -10,9 +10,11 @@ import {
 import { BaseEntity } from '../base.entity';
 import { CourseStudent } from './courseStudent';
 import { Lesson } from '../lesson.entity';
+import { IsString } from 'class-validator';
 export enum Status {
   Corret = 'Corret',
   Wrong = 'Wrong',
+  New = 'New',
 }
 
 @Entity({ name: 'lesson student' })
@@ -37,7 +39,8 @@ export class LessonStudent extends BaseEntity {
   @OneToOne(() => Lesson, (lesson) => lesson.id)
   lesson: Lesson;
 
-  @Column({ nullable: true })
+  @Column({ default: Status.New })
   @ApiProperty()
+  @IsString()
   status: Status;
 }
