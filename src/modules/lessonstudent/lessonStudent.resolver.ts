@@ -39,7 +39,7 @@ export class LessonStudentResolver {
   @Roles(['Any'])
   @Post('change')
   @ApiOkResponse({ type: UpdateLessonStudentOutput })
-  async updateLesson(
+  async updateLessonStudent(
     @CurrentUser() user: User,
     @Body() input: UpdateLessonStudentInput,
   ): Promise<CreateLessonStudentOutput> {

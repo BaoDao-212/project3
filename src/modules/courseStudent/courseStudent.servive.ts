@@ -81,7 +81,7 @@ export class CourseStudentService {
         numberCompleteLesson: 0,
         student,
       });
-      this.lessonStudentRepo.save(newCourseStudent);
+      this.courseStudentRepo.save(newCourseStudent);
 
       return {
         ok: true,

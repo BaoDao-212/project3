@@ -31,6 +31,10 @@ export class CreateLessonInput {
 
   @ApiProperty()
   @IsString()
+  inputString: string;
+
+  @ApiProperty()
+  @IsString()
   answer: string;
 }
 export class CreateLessonOutput extends CoreOutput {}

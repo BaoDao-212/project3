@@ -27,25 +27,25 @@ export class UpdateLessonStudentInput {
 export class UpdateLessonStudentOutput extends CoreOutput {
   @ApiProperty({ description: 'error ' })
   @IsString()
-  stderr: string;
+  stderr?: string;
 
   @ApiProperty({ description: 'output ' })
   @IsString()
-  stdout: string;
+  stdout?: string;
 
   @ApiProperty({ description: 'exitCode ' })
   @IsString()
-  exitCode: number;
+  exitCode?: number;
 
   @ApiProperty({ description: 'signal ' })
   @IsString()
-  signal: string;
+  signal?: string;
 
   @ApiProperty({ description: 'memoryUsage ' })
   @IsString()
-  memoryUsage: string;
+  memoryUsage?: string;
 
   @ApiProperty({ description: 'cpuUsage ' })
   @IsString()
-  cpuUsage: string;
+  cpuUsage?: string;
 }

@@ -15,7 +15,23 @@ async function bootstrap() {
     },
   });
   const config = app.get(ConfigService);
+  const t = encodeURIComponent(
+    `#include <stdio.h>
 
+    int main() {
+        int n, i, sum = 0;
+        scanf("%d", &n);
+        int arr[n];
+        for (i = 0; i < n; i++) {
+            scanf("%d", &arr[i]);
+            sum += arr[i];
+        }
+        printf(" %d", sum);
+        return 0;
+    }
+    `,
+  );
+  console.log(t);
   app.enableCors();
   // execption
   // app.useGlobalFilters(new ApiExceptionFilter(app.get(LoggerService)));
