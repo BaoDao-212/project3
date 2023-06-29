@@ -10,6 +10,7 @@ import { Course } from 'src/entities/course.entity';
 import {
   CreateLessonStudentInput,
   CreateLessonStudentOutput,
+  DetailLessonStudentOutput,
   UpdateLessonStudentInput,
   UpdateLessonStudentOutput,
 } from './lessonStudent.dto';
@@ -131,6 +132,7 @@ export class LessonStudentService {
         language,
         code: codeCurrent,
       });
+
       const {
         cpuUsage,
         exitCode,
@@ -160,6 +162,40 @@ export class LessonStudentService {
       };
     } catch (error) {
       console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  // xem chi  tiết khóa học cho người dùng
+  async detailLessonStudent(
+    student: User,
+    idLessonStudent: number,
+  ): Promise<DetailLessonStudentOutput> {
+    try {
+      const lessonStudent = await this.lessonStudentRepo.findOne({
+        where: {
+          id: idLessonStudent,
+        },
+        relations: {
+          lesson: {
+            course: {
+              professor: true,
+            },
+          },
+          courseStudent: {
+            student: { user: true },
+          },
+        },
+      });
+      if (!lessonStudent)
+        return createError('Input', 'Yêu cầu này không hợp lệ');
+      if (lessonStudent.courseStudent.student.user.id !== student.id)
+        return createError('Lỗi truy cập', 'Truy cập không hợp lệ ');
+
+      return {
+        ok: true,
+        lessonStudent,
+      };
+    } catch (error) {
       return createError('Server', 'Lỗi server, thử lại sau');
     }
   }

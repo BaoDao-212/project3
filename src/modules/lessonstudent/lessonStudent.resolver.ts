@@ -1,4 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -11,6 +18,7 @@ import { User } from 'src/entities/user.entity';
 import {
   CreateLessonStudentInput,
   CreateLessonStudentOutput,
+  DetailLessonStudentOutput,
   UpdateLessonStudentInput,
   UpdateLessonStudentOutput,
 } from './lessonStudent.dto';
@@ -44,5 +52,17 @@ export class LessonStudentResolver {
     @Body() input: UpdateLessonStudentInput,
   ): Promise<CreateLessonStudentOutput> {
     return this.lessonStudentService.updateLessonStudent(user, input);
+  }
+  @ApiOperation({
+    summary: 'Update lesson student',
+  })
+  @Roles(['Any'])
+  @Get('detail/:id')
+  @ApiOkResponse({ type: DetailLessonStudentOutput })
+  async detailLessonStudent(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DetailLessonStudentOutput> {
+    return this.lessonStudentService.detailLessonStudent(user, id);
   }
 }
