@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { Language } from 'src/entities/course.entity';
+import { Course, Language } from 'src/entities/course.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
 
 export class CreateCourseInput {
@@ -12,9 +12,8 @@ export class CreateCourseInput {
   @IsString()
   language: Language;
 
-  @ApiProperty({ description: 'description of this course' })
-  @IsString()
-  description: string;
+  @ApiProperty({ description: 'content of this post' })
+  description: object[];
 
   @ApiProperty({ description: 'time of this course (hours)' })
   @IsNumber()
@@ -24,4 +23,17 @@ export class CreateCourseInput {
   @IsString()
   numberLesson: number;
 }
-export class CreateCourseOutput extends CoreOutput {}
+export class CreateCourseOutput extends CoreOutput {
+  @ApiProperty({
+    description: 'number lesson of this course (lesson)',
+    type: Course,
+  })
+  course?: Course;
+}
+export class ListCourseOutput extends CoreOutput {
+  @ApiProperty({
+    description: 'number lesson of this course (lesson)',
+    type: Course,
+  })
+  course?: Course[];
+}

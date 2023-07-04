@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -7,7 +7,11 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from '../auth/role.decorator';
 import { CourseService } from './course.servive';
-import { CreateCourseInput, CreateCourseOutput } from './course.dto';
+import {
+  CreateCourseInput,
+  CreateCourseOutput,
+  ListCourseOutput,
+} from './course.dto';
 import { CurrentUser } from '../auth/user.decorator';
 import { User } from 'src/entities/user.entity';
 
@@ -27,5 +31,16 @@ export class CourseResolver {
     @Body() input: CreateCourseInput,
   ): Promise<CreateCourseOutput> {
     return this.courseService.createCourse(user, input);
+  }
+  @ApiOperation({
+    summary: 'List Course Professor',
+  })
+  @Roles(['Professor'])
+  @Get('/professor/list')
+  @ApiOkResponse({ type: ListCourseOutput })
+  async listCourseProfessor(
+    @CurrentUser() user: User,
+  ): Promise<ListCourseOutput> {
+    return this.courseService.listCourseProfessor(user);
   }
 }
