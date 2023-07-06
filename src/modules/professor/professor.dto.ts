@@ -26,11 +26,10 @@ export class ChangeProfessorProFileInPut{
   @IsString()
   newAcademicLevel: string;
 }
-export class ChangeProfessorProFileOutput extends CoreOutput{}
-
-
-export class GetListLessonsOutput extends CoreOutput{
-  @ApiProperty({ description: 'list of lesson' })
-  lessons?: Lesson[];
+export class ChangeProfessorProFileOutput extends CoreOutput{
 }
 
+export class GetListLessonsOutput extends CoreOutput{
+  @ApiProperty({ description: 'List Lesson' })
+  lessons?: Lesson[];
+}

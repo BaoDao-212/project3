@@ -12,9 +12,8 @@ export class CreateCourseInput {
   @IsString()
   language: Language;
 
-  @ApiProperty({ description: 'description of this course' })
-  @IsString()
-  description: string;
+  @ApiProperty({ description: 'content of this post' })
+  description: object[];
 
   @ApiProperty({ description: 'time of this course (hours)' })
   @IsNumber()
@@ -24,7 +23,19 @@ export class CreateCourseInput {
   @IsString()
   numberLesson: number;
 }
-export class CreateCourseOutput extends CoreOutput {}
+export class CreateCourseOutput extends CoreOutput {
+
+  @ApiProperty({
+
+    description: 'number lesson of this course (lesson)',
+
+    type: Course,
+
+  })
+
+  course?: Course;
+
+}
 
 export class GetInfoCourseOutput extends CoreOutput{
   @ApiProperty({description:"List of course"})
@@ -41,7 +52,7 @@ export class ChangeCourseInput{
 
   @ApiProperty({ description: 'description of this course' })
   @IsString()
-  description: string;
+  description: object[];
 
   @ApiProperty({ description: 'time of this course (hours)' })
   @IsNumber()
@@ -51,4 +62,18 @@ export class ChangeCourseInput{
   @IsString()
   numberLesson: number;
 }
+
 export class ChangeCourseOutput extends CoreOutput {}
+export class ListCourseOutput extends CoreOutput {
+
+  @ApiProperty({
+
+    description: 'list course of this course',
+
+    type: Course,
+
+  })
+
+  course?: Course[];
+
+}
