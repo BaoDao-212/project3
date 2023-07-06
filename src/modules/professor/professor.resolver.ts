@@ -54,13 +54,13 @@ export class ProfessorResolver {
     summary: 'Get the list of lessons for a course by course name',
   })
   @Roles(['Professor'])
-  @Get('/:courseName/list-lessons') // Use the courseName as a parameter in the URL
+  @Get('/:courseId/list-lessons') // Use the courseName as a parameter in the URL
   @ApiOkResponse({ type: GetListLessonsOutput}) // Assuming the Lesson interface from the ProfessorService
   async getListLessonsByCourseName(
-    @Param('courseName') courseName: string,
+    @Param('courseId') courseId: number,
     @CurrentUser() input: User
   ){
-    return this.professorService.getListLessonsByCourseName(courseName,input);
+    return this.professorService.getListLessonsByCourseName(courseId,input);
   }
 
 }

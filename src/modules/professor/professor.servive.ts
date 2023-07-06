@@ -130,7 +130,7 @@ async changeProfileProfessor(
       return createError('Server', 'Lỗi server, thử lại sau');
     }
 }
-async getListLessonsByCourseName(courseName:string,input: User):Promise <GetListLessonsOutput>{
+async getListLessonsByCourseName(courseId:number,input: User):Promise <GetListLessonsOutput>{
 try {
   const user1= this.userRepo.findOne({
     where: {
@@ -156,11 +156,19 @@ try {
     })
     const course = await this.courseRepo.find({
       where:{
-        name:courseName,
+        professor:{
+          id: input.id
+        },
+        id:courseId,
       },
       relations:{professor:true,lessons:true}
     });
     const lessons=await this.lessonRepo.find({
+      where:{
+        course:{
+          id:courseId,
+        }
+      },
       relations:{
         course:true,
       }
