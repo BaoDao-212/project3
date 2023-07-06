@@ -25,7 +25,7 @@ export class CourseStudent extends BaseEntity {
 
   @ApiProperty()
   @JoinColumn()
-  @OneToOne(() => Student, (student) => student.id)
+  @ManyToOne(() => Student, (student) => student.id)
   student: Student;
 
   @ApiProperty()

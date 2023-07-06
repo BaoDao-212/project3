@@ -85,15 +85,9 @@ export class Course extends BaseEntity {
   language: Language;
 
 
-
-
   @Column({ type: 'jsonb', array: false, default: () => "'[]'" })
-
   @ApiProperty()
-
   description: object[];
-
-
 
 
   @Column({ nullable: true })

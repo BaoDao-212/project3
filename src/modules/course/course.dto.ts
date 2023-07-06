@@ -24,17 +24,12 @@ export class CreateCourseInput {
   numberLesson: number;
 }
 export class CreateCourseOutput extends CoreOutput {
-
   @ApiProperty({
-
     description: 'number lesson of this course (lesson)',
-
     type: Course,
 
   })
-
   course?: Course;
-
 }
 
 export class GetInfoCourseOutput extends CoreOutput{
@@ -63,17 +58,20 @@ export class ChangeCourseInput{
   numberLesson: number;
 }
 
+
 export class ChangeCourseOutput extends CoreOutput {}
-export class ListCourseOutput extends CoreOutput {
-
+export class CreateCourseOutput extends CoreOutput {
   @ApiProperty({
-
-    description: 'list course of this course',
-
+    description: 'number lesson of this course (lesson)',
     type: Course,
-
   })
-
-  course?: Course[];
-
+  course?: Course;
 }
+export class ListCourseOutput extends CoreOutput {
+  @ApiProperty({
+    description: 'list course of this course',
+    type: Course,
+  })
+  course?: Course[];
+}
+

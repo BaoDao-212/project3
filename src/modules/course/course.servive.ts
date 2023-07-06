@@ -5,7 +5,9 @@ import { Course } from 'src/entities/Course.entity';
 import { Repository } from 'typeorm';
 import { createError } from '../common/utils/createError';
 import { Professor } from 'src/entities/professor.entity';
-import { ChangeCourseInput, ChangeCourseOutput, CreateCourseInput, CreateCourseOutput, GetInfoCourseOutput } from './course.dto';
+
+import { ChangeCourseInput, ChangeCourseOutput, CreateCourseInput, CreateCourseOutput, GetInfoCourseOutput,ListCourseOutput } from './course.dto';
+
 import { User } from 'src/entities/user.entity';
 
 @Injectable()
@@ -59,6 +61,40 @@ export class CourseService {
 
       return {
         ok: true,
+        course: CourseH,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async listCourseProfessor(professor: User): Promise<ListCourseOutput> {
+    try {
+      const pro = await this.professorRepo.findOne({
+        where: {
+          user: {
+            id: professor.id,
+          },
+        },
+        relations: {
+          user: true,
+        },
+      });
+      if (!pro) return createError('Input', 'Professor không hợp lệ');
+      const course = await this.courseRepo.find({
+        where: {
+          professor: {
+            id: pro.id,
+          },
+        },
+        relations: {
+          lessons: true,
+          professor: true,
+        },
+      });
+      return {
+        ok: true,
+        course,
       };
     } catch (error) {
       console.log(error);

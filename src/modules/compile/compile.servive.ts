@@ -16,29 +16,18 @@ export class CompileService {
   async runCode(input: RunCodeInput): Promise<RunCodeOutput> {
     try {
       const { code, language, inputString } = input;
-      // const t = encodeURIComponent(
-      //   `#include <stdio.h>
-      //   int main() {
-      //       int a=0, b=0, sum;
-      //       sum = a + b;
-      //       printf("Tổng hai số là: %d\\n", sum);
-      //       return 0;
-      //   }
-      //   `,
-      // );
-      // console.log(t);
+
       let res;
       const decodedCode = decodeURIComponent(code);
       if (language === Language.C) {
-        res = await c.runSource(decodedCode);
+        res = await c.runSource(decodedCode, { stdin: inputString });
       } else if (language === Language.Cpp) {
-        res = await cpp.runSource(decodedCode, { stdin: '' });
+        res = await cpp.runSource(decodedCode, { stdin: inputString });
       } else if (language === Language.Python) {
-        res = await python.runSource(decodedCode);
+        res = await python.runSource(decodedCode, { stdin: inputString });
       } else if (language === Language.Java) {
-        res = await java.runSource(decodedCode);
+        res = await java.runSource(decodedCode, { stdin: inputString });
       }
-      console.log(res);
       return {
         ok: true,
         cpuUsage: res.cpuUsage,
@@ -49,8 +38,7 @@ export class CompileService {
         stdout: res.stdout.replace(/\r?\n$/, ''),
       };
     } catch (error) {
-      return;
-      // return createError('Server', 'Lỗi server, thử lại sau');
+      return createError('Server', 'Lỗi server, thử lại sau');
     }
   }
 }

@@ -23,8 +23,16 @@ export class LessonService {
     input: CreateLessonInput,
   ): Promise<CreateLessonOutput> {
     try {
-      const { answer, courseId, description, exercise, name, theory, type } =
-        input;
+      const {
+        answer,
+        courseId,
+        description,
+        exercise,
+        name,
+        theory,
+        type,
+        inputString,
+      } = input;
       const lesson = await this.lessonRepo.findOne({
         where: {
           name: name,
@@ -64,6 +72,7 @@ export class LessonService {
           name,
           type,
           course,
+          input: inputString,
         }),
       );
       return {

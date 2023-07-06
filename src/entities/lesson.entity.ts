@@ -17,11 +17,12 @@ export enum TypeLesson {
 export enum TypeTheory {
   Text = 'Text',
   Media = 'Media',
-  HighLightCode = 'HighLightCode',
+  Code = 'Code',
 }
 export class Theory {
   @ApiProperty()
-  theory: string|object;
+  theory: string | object;
+
 
   @ApiProperty({ enum: TypeTheory, default: TypeTheory.Text })
   typeTheory: TypeTheory;

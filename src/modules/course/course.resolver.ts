@@ -7,7 +7,9 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from '../auth/role.decorator';
 import { CourseService } from './course.servive';
-import { ChangeCourseInput, ChangeCourseOutput, CreateCourseInput, CreateCourseOutput, GetInfoCourseOutput } from './course.dto';
+
+import { ChangeCourseInput, ChangeCourseOutput, CreateCourseInput, CreateCourseOutput, GetInfoCourseOutput,ListCourseOutput } from './course.dto';
+
 import { CurrentUser } from '../auth/user.decorator';
 import { User } from 'src/entities/user.entity';
 
@@ -28,6 +30,7 @@ export class CourseResolver {
   ): Promise<CreateCourseOutput> {
     return this.courseService.createCourse(user, input);
   }
+
 
   @ApiOperation({
     summary: 'Get list Course',
@@ -51,6 +54,19 @@ export class CourseResolver {
     @Body() input: ChangeCourseInput,
   ) {
     return this.courseService.changeCourse(user,input);
+    }
+
+  @ApiOperation({
+    summary: 'List Course Professor',
+  })
+  @Roles(['Professor'])
+  @Get('/professor/list')
+  @ApiOkResponse({ type: ListCourseOutput })
+  async listCourseProfessor(
+    @CurrentUser() user: User,
+  ): Promise<ListCourseOutput> {
+    return this.courseService.listCourseProfessor(user);
+
   }
 }
 
