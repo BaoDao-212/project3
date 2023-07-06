@@ -54,7 +54,7 @@ export class LessonStudentResolver {
     return this.lessonStudentService.updateLessonStudent(user, input);
   }
   @ApiOperation({
-    summary: 'Update lesson student',
+    summary: 'Detail lesson student',
   })
   @Roles(['Any'])
   @Get('detail/:id')

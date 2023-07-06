@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -10,10 +19,14 @@ import { CourseService } from './course.servive';
 import {
   CreateCourseInput,
   CreateCourseOutput,
+  DetailCourseOutput,
   ListCourseOutput,
+  UpdateCourseInput,
+  UpdateCourseOutput,
 } from './course.dto';
 import { CurrentUser } from '../auth/user.decorator';
 import { User } from 'src/entities/user.entity';
+import { CoreOutput } from '../common/output.dto';
 
 @ApiTags('Course')
 @Controller('/course')
@@ -42,5 +55,41 @@ export class CourseResolver {
     @CurrentUser() user: User,
   ): Promise<ListCourseOutput> {
     return this.courseService.listCourseProfessor(user);
+  }
+  @ApiOperation({
+    summary: 'Detail course ',
+  })
+  @Roles(['Any'])
+  @Get('detail/:id')
+  @ApiOkResponse({ type: DetailCourseOutput })
+  async detailCourse(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DetailCourseOutput> {
+    return this.courseService.detailCourse(id);
+  }
+  @ApiOperation({
+    summary: 'Delete course',
+  })
+  @Roles(['Professor'])
+  @Delete('delete/:id')
+  @ApiOkResponse({ type: CoreOutput })
+  async deleteCourse(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<CoreOutput> {
+    return this.courseService.deleteCourse(user, id);
+  }
+  @ApiOperation({
+    summary: 'Update course',
+  })
+  @Roles(['Professor'])
+  @Put('update')
+  @ApiOkResponse({ type: UpdateCourseOutput })
+  async updateCourse(
+    @CurrentUser() user: User,
+    @Body() input: UpdateCourseInput,
+  ): Promise<UpdateCourseOutput> {
+    return this.courseService.updateCourse(user, input);
   }
 }
