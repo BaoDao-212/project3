@@ -6,18 +6,24 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { createError } from '../common/utils/createError';
 import { Professor } from 'src/entities/professor.entity';
-import {  ChangeProfessorProFileInPut, CreateProfessorInput, CreateProfessorOutput, GetProfessorProfileOutput } from './professor.dto';
+import {  ChangeProfessorProFileInPut, CreateProfessorInput, CreateProfessorOutput, GetListLessonsOutput, GetProfessorProfileOutput } from './professor.dto';
 import { Student } from 'src/entities/student.entity';
+import { Lesson } from 'src/entities/lesson.entity';
+import { Course } from 'src/entities/course.entity';
 
 @Injectable()
 export class ProfessorService {
   constructor(
     @InjectRepository(User) 
     private readonly userRepo: Repository<User>,
+    @InjectRepository(Lesson) 
+    private readonly lessonRepo: Repository<Lesson>,
     @InjectRepository(Professor)
     private readonly professorRepo: Repository<Professor>,
     @InjectRepository(Student)
     private readonly studentRepo: Repository<Student>,
+    @InjectRepository(Course)
+    private readonly courseRepo: Repository<Course>,
   ) {}
 
   async createUser(
@@ -95,12 +101,6 @@ export class ProfessorService {
           professor: professor,
         };
       }
-      // const professor = this.userRepo.findOne({
-      //   where: {
-      //     position:inpu
-      //   },
-      // });
-      // if (!professor) return createError('Input', 'Người dùng không hợp lệ');
       
   }catch (error) {
     console.log(error);
@@ -129,5 +129,50 @@ async changeProfileProfessor(
     }catch(error){
       return createError('Server', 'Lỗi server, thử lại sau');
     }
+}
+async getListLessonsByCourseName(courseName:string,input: User):Promise <GetListLessonsOutput>{
+try {
+  const user1= this.userRepo.findOne({
+    where: {
+      id: input.id,
+    },
+  });
+  if (!user1) return createError('Input', 'Người dùng không hợp lệ');
+  
+  if (input.position==="Student")
+    return createError(
+      'Input',
+      'User này là Student',
+    );
+  if(input.position==="Professor"){
+    // const {courseName}=courseName1
+    const professor=await this.professorRepo.findOne({
+      where: {
+       id : input.id
+      },
+      relations: {
+        user: true,
+      },
+    })
+    const course = await this.courseRepo.find({
+      where:{
+        name:courseName,
+      },
+      relations:{professor:true,lessons:true}
+    });
+    const lessons=await this.lessonRepo.find({
+      relations:{
+        course:true,
+      }
+    })
+  return {
+      ok: true,
+      lessons:lessons,
+    };
+  }
+} catch (error) {
+  console.log(error);
+    return createError('Server', 'Lỗi server, thử lại sau');
+}
 }
 }

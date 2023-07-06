@@ -68,7 +68,9 @@ export class CourseService {
 
   async getInfoCourse(): Promise<GetInfoCourseOutput> {
     try {
-      const courses = await this.courseRepo.find();
+      const courses = await this.courseRepo.find({
+        relations:{professor:true,lessons:true}
+      });
       return {
         ok: true,
         courses: courses,

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, MinLength, isString } from 'class-validator';
+import { Lesson } from 'src/entities/lesson.entity';
 import { Professor } from 'src/entities/professor.entity';
 import { User } from 'src/entities/user.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
@@ -25,5 +26,11 @@ export class ChangeProfessorProFileInPut{
   @IsString()
   newAcademicLevel: string;
 }
-export class ChangeProfessorProFileOutput extends CoreOutput{
+export class ChangeProfessorProFileOutput extends CoreOutput{}
+
+
+export class GetListLessonsOutput extends CoreOutput{
+  @ApiProperty({ description: 'list of lesson' })
+  lessons?: Lesson[];
 }
+

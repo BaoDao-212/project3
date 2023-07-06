@@ -12,7 +12,7 @@ import { CourseStudent } from './courseStudent';
 import { Lesson } from '../lesson.entity';
 import { IsString } from 'class-validator';
 export enum Status {
-  Corret = 'Corret',
+  Correct = 'Correct',
   Wrong = 'Wrong',
   New = 'New',
 }

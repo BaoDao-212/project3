@@ -6,9 +6,11 @@ import { User } from 'src/entities/user.entity';
 import { ProfessorResolver } from './professor.resolver';
 import { ProfessorService } from './professor.servive';
 import { Student } from 'src/entities/student.entity';
+import { Course } from 'src/entities/course.entity';
+import { Lesson } from 'src/entities/lesson.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Professor, Student])],
+  imports: [TypeOrmModule.forFeature([User, Professor, Student,Course,Lesson])],
   providers: [ProfessorResolver, ProfessorService],
   controllers: [ProfessorResolver],
 })
