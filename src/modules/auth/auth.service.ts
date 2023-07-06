@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JsonWebTokenError, sign, verify } from 'jsonwebtoken';
-
+// import {Mailer}
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import {
   ChangePasswordInput,
   ChangePasswordOutput,
+  ForgotPasswordInput,
   LoginInput,
   LoginOutput,
   NewAccessTokenInput,
@@ -212,4 +213,73 @@ export class AuthService {
   }
 
   // TODO: Triển khai quên mật khẩu (khi chọn được dịch vụ SMS phù hợp)
+  async forgotPassword(input: ForgotPasswordInput,){
+    const {name}=input
+    try {
+      const user = await this.userRepo.findOne({
+        where: {
+          username:name,
+        },
+      });
+      if (!user) return createError('Input', 'Tài khoản không tồn tại');
+      if(!user.email) return createError('Input', 'Tài khoản này chưa có email');
+    const randomPassword = generateRandomPassword(8); // Độ dài mật khẩu 8 ký tự
+      user.password=randomPassword;
+      await this.userRepo.save(user);
+       
+       sendEmail(randomPassword,user.email);
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+}
+const generateRandomPassword = (length: number): string => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+  
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    password += characters.charAt(randomIndex);
+  }
+  
+  return password;
+};
+
+
+// Hàm gửi email với mật khẩu mới
+async function sendEmail(newPassword,email) {
+  const nodemailer = require('nodemailer');
+
+  try {
+    console.log(newPassword);
+    // Tạo transporter
+    let transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'duytuongkhmt@gmail.com',
+        pass: 'ayaozgozntxogrgy',
+      },
+    });
+
+    // Cấu hình thông tin email
+    let mailOptions = {
+      from: 'duytuongkhmt@gmail.com',
+      to: `${email}`,
+      subject: 'Mật khẩu mới',
+      text: `Mật khẩu mới của bạn là: ${newPassword}`,
+    };
+
+    // Gửi email
+    let info = await transporter.sendMail(mailOptions);
+    console.log('Email đã được gửi:', info.response);
+  } catch (error) {
+    console.log('Lỗi khi gửi email:', error);
+  }
 }

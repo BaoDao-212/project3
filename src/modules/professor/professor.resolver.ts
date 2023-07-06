@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -6,8 +6,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../auth/role.decorator';
-import { CreateProfessorInput, CreateProfessorOutput } from './professor.dto';
+import {  ChangeProfessorProFileInPut, ChangeProfessorProFileOutput, CreateProfessorInput, CreateProfessorOutput, GetListLessonsOutput, GetProfessorProfileOutput } from './professor.dto';
 import { ProfessorService } from './professor.servive';
+import { User } from 'src/entities/user.entity';
+import { CurrentUser } from '../auth/user.decorator';
+import { Lesson } from 'src/entities/lesson.entity';
 
 @ApiTags('Professor')
 @Controller('/professor')
@@ -25,4 +28,39 @@ export class ProfessorResolver {
   ): Promise<CreateProfessorOutput> {
     return this.professorService.createUser(input);
   }
+  @ApiOperation({
+    summary: 'Profile professor',
+  })
+  @Roles(['Professor'])
+  @Get('profile')
+  @ApiOkResponse({ type: GetProfessorProfileOutput })
+  async getInfo(@CurrentUser() input: User) {
+    return this.professorService.getProfessorProfile(input);
+  }
+  
+  @ApiOperation({
+    summary: 'Change Profile professor',
+  })
+  @Roles(['Professor'])
+  @Post('/change-profile')
+  @ApiOkResponse({ type: ChangeProfessorProFileOutput })
+  async changechangeProfileProfessorProfile(
+    @CurrentUser() user: User,
+    @Body() input: ChangeProfessorProFileInPut,
+  ) {
+    return this.professorService.changeProfileProfessor(user,input);
+  }
+  @ApiOperation({
+    summary: 'Get the list of lessons for a course by course name',
+  })
+  @Roles(['Professor'])
+  @Get('/:courseName/list-lessons') // Use the courseName as a parameter in the URL
+  @ApiOkResponse({ type: GetListLessonsOutput}) // Assuming the Lesson interface from the ProfessorService
+  async getListLessonsByCourseName(
+    @Param('courseName') courseName: string,
+    @CurrentUser() input: User
+  ){
+    return this.professorService.getListLessonsByCourseName(courseName,input);
+  }
+
 }

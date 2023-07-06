@@ -12,3 +12,4 @@ export class CreateUserInput {
   class: string;
 }
 export class CreateUserOutput extends CoreOutput {}
+
