@@ -70,7 +70,6 @@ export class CourseService {
       console.log(CourseH);
 
       await this.courseRepo.save(CourseH);
-      console.log('12312312312312');
 
       return {
         ok: true,
@@ -111,6 +110,7 @@ export class CourseService {
           'Số tiết học hoặc tổng số giờ học không hợp lệ',
         );
       course.name = name;
+      course.image = input.image;
       course.description = description;
       course.language = language;
       course.numberLesson = numberLesson;
@@ -146,6 +146,23 @@ export class CourseService {
         relations: {
           lessons: true,
           professor: true,
+        },
+      });
+      return {
+        ok: true,
+        course,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async listCourse(): Promise<ListCourseOutput> {
+    try {
+      const course = await this.courseRepo.find({
+        relations: {
+          professor: { user: true },
+          lessons: true,
         },
       });
       return {

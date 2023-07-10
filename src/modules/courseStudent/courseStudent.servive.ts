@@ -10,6 +10,8 @@ import { Course } from 'src/entities/course.entity';
 import {
   CreateCourseStudentInput,
   CreateCourseStudentOutput,
+  DetailCourseStudentOutput,
+  ListCourseStudentOutput,
 } from './courseStudent.dto';
 import { CourseStudent } from 'src/entities/contant/courseStudent';
 import { LessonStudent } from 'src/entities/contant/lessonStudent';
@@ -85,6 +87,56 @@ export class CourseStudentService {
 
       return {
         ok: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async listCourseStudent(studentUser: User): Promise<ListCourseStudentOutput> {
+    try {
+      // kiểm tra khóa học này có tồn tại nữa không
+      const course = await this.courseStudentRepo.find({
+        where: {
+          student: { user: { id: studentUser.id } },
+        },
+        relations: {
+          lessonStudents: { lesson: true },
+          student: { user: true },
+          course: { professor: { user: true }, lessons: true },
+        },
+      });
+
+      return {
+        ok: true,
+        course,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async detailCourseStudent(
+    studentUser: User,
+    courseId: number,
+  ): Promise<DetailCourseStudentOutput> {
+    try {
+      // kiểm tra khóa học này có tồn tại nữa không
+      const course = await this.courseStudentRepo.findOne({
+        where: {
+          student: { user: { id: studentUser.id } },
+          course: { id: courseId },
+        },
+        relations: {
+          student: { user: true },
+          course: { professor: { user: true }, lessons: true },
+          lessonStudents: { lesson: true },
+        },
+      });
+
+      return {
+        ok: true,
+        course,
       };
     } catch (error) {
       console.log(error);

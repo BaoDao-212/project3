@@ -11,6 +11,7 @@ import {
   CreateLessonStudentInput,
   CreateLessonStudentOutput,
   DetailLessonStudentOutput,
+  ListLessonStudentOutput,
   UpdateLessonStudentInput,
   UpdateLessonStudentOutput,
 } from './lessonStudent.dto';
@@ -51,8 +52,8 @@ export class LessonStudentService {
       });
       if (lessonStudentCheck)
         return createError(
-          'Input',
-          'Lỗi thao tác, bài học này đã được hoàn thiện vào trước đó',
+          'Error Operation',
+          'Bài học này đã được đăng ký vào trước đó,hãy bắt đầu vào làm bài',
         );
       const courseStudent = await this.courseStudentRepo.findOne({
         where: {
@@ -88,10 +89,11 @@ export class LessonStudentService {
         lesson,
         courseStudent,
       });
-      this.lessonStudentRepo.save(lessonStudent);
+      await this.lessonStudentRepo.save(lessonStudent);
 
       return {
         ok: true,
+        lessonId: lessonStudent.id,
       };
     } catch (error) {
       console.log(error);
@@ -104,7 +106,7 @@ export class LessonStudentService {
   ): Promise<UpdateLessonStudentOutput> {
     try {
       const { codeCurrent, lessonStudentId } = inputUpdate;
-      console.log(inputUpdate);
+      // console.log(inputUpdate);
       const LessonStudent = await this.lessonStudentRepo.findOne({
         where: {
           id: lessonStudentId,
@@ -132,18 +134,23 @@ export class LessonStudentService {
         language,
         code: codeCurrent,
       });
+      // console.log(output);
 
       const {
         cpuUsage,
         exitCode,
         memoryUsage,
         ok,
+        errorType,
         signal,
         stderr,
         stdout,
         error,
       } = output;
-      if (stdout == LessonStudent.lesson.answer) {
+      console.log(stdout);
+      console.log(LessonStudent.lesson.answer);
+
+      if (stdout == decodeURIComponent(LessonStudent.lesson.answer)) {
         LessonStudent.status = Status.Correct;
       } else {
         LessonStudent.status = Status.Wrong;
@@ -152,6 +159,7 @@ export class LessonStudentService {
       await this.lessonStudentRepo.save(LessonStudent);
       return {
         ok: true,
+        status: LessonStudent.status,
         cpuUsage,
         exitCode,
         memoryUsage,
@@ -159,6 +167,7 @@ export class LessonStudentService {
         stderr,
         stdout,
         error,
+        errorType,
       };
     } catch (error) {
       console.log(error);
@@ -190,6 +199,38 @@ export class LessonStudentService {
         return createError('Input', 'Yêu cầu này không hợp lệ');
       if (lessonStudent.courseStudent.student.user.id !== student.id)
         return createError('Lỗi truy cập', 'Truy cập không hợp lệ ');
+
+      return {
+        ok: true,
+        lessonStudent,
+      };
+    } catch (error) {
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async listLessonStudent(
+    student: User,
+    courseId: number,
+  ): Promise<ListLessonStudentOutput> {
+    try {
+      const lessonStudent = await this.lessonStudentRepo.find({
+        where: {
+          courseStudent: {
+            student: { user: { id: student.id } },
+            course: { id: courseId },
+          },
+        },
+        relations: {
+          lesson: {
+            course: {
+              professor: true,
+            },
+          },
+          courseStudent: {
+            student: { user: true },
+          },
+        },
+      });
 
       return {
         ok: true,

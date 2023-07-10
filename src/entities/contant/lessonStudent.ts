@@ -35,8 +35,9 @@ export class LessonStudent extends BaseEntity {
   codeCurrent: string;
 
   @ApiProperty()
-  @JoinColumn()
-  @OneToOne(() => Lesson, (lesson) => lesson.id)
+  @ManyToOne(() => Lesson, (lesson) => lesson.id, {
+    cascade: ['update'],
+  })
   lesson: Lesson;
 
   @Column({ default: Status.New })

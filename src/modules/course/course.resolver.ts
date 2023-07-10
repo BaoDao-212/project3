@@ -46,7 +46,7 @@ export class CourseResolver {
     return this.courseService.createCourse(user, input);
   }
   @ApiOperation({
-    summary: 'List Course Professor',
+    summary: 'List Course of Professor',
   })
   @Roles(['Professor'])
   @Get('/professor/list')
@@ -55,6 +55,15 @@ export class CourseResolver {
     @CurrentUser() user: User,
   ): Promise<ListCourseOutput> {
     return this.courseService.listCourseProfessor(user);
+  }
+  @ApiOperation({
+    summary: 'List Course ',
+  })
+  @Roles(['Any'])
+  @Get('/list')
+  @ApiOkResponse({ type: ListCourseOutput })
+  async listCourse(): Promise<ListCourseOutput> {
+    return this.courseService.listCourse();
   }
   @ApiOperation({
     summary: 'Detail course ',

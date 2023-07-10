@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import { IsNumber, IsString } from 'class-validator';
 import { Course, Language } from 'src/entities/course.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
+import { StoredFile } from '../upload/object/StoredFile';
 
 export class CreateCourseInput {
   @ApiProperty({ description: 'name of course' })
@@ -46,6 +47,9 @@ export class UpdateCourseInput {
   @ApiProperty({ description: 'number lesson of this course (lesson)' })
   @IsString()
   numberLesson: number;
+
+  @ApiProperty({ description: 'image of this course ' })
+  image: StoredFile;
 }
 export class UpdateCourseOutput extends CoreOutput {}
 export class CreateCourseOutput extends CoreOutput {

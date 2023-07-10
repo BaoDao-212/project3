@@ -11,6 +11,9 @@ import {
 } from 'typeorm';
 import { Professor } from './professor.entity';
 import { Lesson } from './lesson.entity';
+import { IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { StoredFile } from 'src/modules/upload/object/StoredFile';
 export enum Language {
   Cpp = 'Cpp',
   C = 'C',
@@ -51,4 +54,11 @@ export class Course extends BaseEntity {
   @Column({ nullable: true })
   @ApiProperty()
   time: number;
+
+  @ApiProperty()
+  @Column({ type: 'jsonb' })
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => StoredFile)
+  image?: StoredFile;
 }

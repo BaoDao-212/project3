@@ -1,4 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -13,6 +20,8 @@ import { CourseStudentService } from './courseStudent.servive';
 import {
   CreateCourseStudentInput,
   CreateCourseStudentOutput,
+  DetailCourseStudentOutput,
+  ListCourseStudentOutput,
 } from './courseStudent.dto';
 
 @ApiTags('CourseStudent')
@@ -23,14 +32,37 @@ export class CourseStudentResolver {
   @ApiOperation({
     summary: 'Create couse student',
   })
-  @Roles(['Any'])
+  @Roles(['Student'])
   @Post('create')
   @ApiOkResponse({ type: CreateCourseStudentOutput })
-  async createLesson(
+  async createCourseStudent(
     @CurrentUser() user: User,
     @Body() input: CreateCourseStudentInput,
   ): Promise<CreateCourseStudentOutput> {
     return this.courseStudentService.createCourseStudent(user, input);
+  }
+  @ApiOperation({
+    summary: 'Create couse student',
+  })
+  @Roles(['Student'])
+  @Get('list')
+  @ApiOkResponse({ type: ListCourseStudentOutput })
+  async listCourseStudent(
+    @CurrentUser() user: User,
+  ): Promise<ListCourseStudentOutput> {
+    return this.courseStudentService.listCourseStudent(user);
+  }
+  @ApiOperation({
+    summary: 'Create couse student',
+  })
+  @Roles(['Student'])
+  @Get('detail/:id')
+  @ApiOkResponse({ type: DetailCourseStudentOutput })
+  async detailsCourseStudent(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DetailCourseStudentOutput> {
+    return this.courseStudentService.detailCourseStudent(user, id);
   }
   // @ApiOperation({
   //   summary: 'Update lesson student',
