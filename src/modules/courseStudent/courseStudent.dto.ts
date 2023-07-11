@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
+import { CourseStudent } from 'src/entities/contant/courseStudent';
 import { CoreOutput } from 'src/modules/common/output.dto';
 
 export class CreateCourseStudentInput {
@@ -8,6 +9,18 @@ export class CreateCourseStudentInput {
   courseId: number;
 }
 export class CreateCourseStudentOutput extends CoreOutput {}
+export class ListCourseStudentOutput extends CoreOutput {
+  @ApiProperty({ description: 'list course is register by this student' })
+  course?: CourseStudent[];
+}
+export class ListCourseStudentOfProfessorOutput extends CoreOutput {
+  @ApiProperty({ description: 'list course is register by this student' })
+  courseData?: object[];
+}
+export class DetailCourseStudentOutput extends CoreOutput {
+  @ApiProperty({ description: 'detail course is register by this student' })
+  course?: CourseStudent;
+}
 
 export class UpdateCourseStudentInput {
   @ApiProperty({ description: 'code current id of lesson' })

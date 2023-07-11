@@ -20,7 +20,9 @@ export class CourseStudent extends BaseEntity {
   id: number;
 
   @ApiProperty()
-  @ManyToOne(() => Course, (pro) => pro.id)
+  @ManyToOne(() => Course, (pro) => pro.id, {
+    cascade: ['update'],
+  })
   course: Course;
 
   @ApiProperty()

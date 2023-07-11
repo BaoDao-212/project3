@@ -19,6 +19,7 @@ import {
   CreateLessonStudentInput,
   CreateLessonStudentOutput,
   DetailLessonStudentOutput,
+  ListLessonStudentOutput,
   UpdateLessonStudentInput,
   UpdateLessonStudentOutput,
 } from './lessonStudent.dto';
@@ -54,7 +55,7 @@ export class LessonStudentResolver {
     return this.lessonStudentService.updateLessonStudent(user, input);
   }
   @ApiOperation({
-    summary: 'Update lesson student',
+    summary: 'Detail lesson student',
   })
   @Roles(['Any'])
   @Get('detail/:id')
@@ -64,5 +65,17 @@ export class LessonStudentResolver {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<DetailLessonStudentOutput> {
     return this.lessonStudentService.detailLessonStudent(user, id);
+  }
+  @ApiOperation({
+    summary: 'List Lesson Student',
+  })
+  @Roles(['Student'])
+  @Get('list/:id')
+  @ApiOkResponse({ type: ListLessonStudentOutput })
+  async listLessonStudent(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ListLessonStudentOutput> {
+    return this.lessonStudentService.listLessonStudent(user, id);
   }
 }

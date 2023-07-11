@@ -19,6 +19,9 @@ export class CompileService {
 
       let res;
       const decodedCode = decodeURIComponent(code);
+      // console.log(decodedCode);
+      // console.log(input);
+
       if (language === Language.C) {
         res = await c.runSource(decodedCode, { stdin: inputString });
       } else if (language === Language.Cpp) {
@@ -28,6 +31,8 @@ export class CompileService {
       } else if (language === Language.Java) {
         res = await java.runSource(decodedCode, { stdin: inputString });
       }
+      console.log(res);
+
       return {
         ok: true,
         cpuUsage: res.cpuUsage,
@@ -35,7 +40,8 @@ export class CompileService {
         memoryUsage: res.memoryUsage,
         signal: res.signal,
         stderr: res.stderr,
-        stdout: res.stdout.replace(/\r?\n$/, ''),
+        errorType: res.errorType,
+        stdout: res.stdout.replace(/\r\n/g, '\n'),
       };
     } catch (error) {
       return createError('Server', 'Lỗi server, thử lại sau');

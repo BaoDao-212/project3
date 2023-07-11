@@ -1,4 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -6,7 +14,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../auth/role.decorator';
-import { CreateLessonOutput, CreateLessonInput } from './lesson.dto';
+import {
+  CreateLessonOutput,
+  CreateLessonInput,
+  DetailLessonOutput,
+  DeleteLessonOutput,
+} from './lesson.dto';
 import { CurrentUser } from '../auth/user.decorator';
 import { User } from 'src/entities/user.entity';
 import { LessonService } from './lesson.servive';
@@ -27,5 +40,28 @@ export class LessonResolver {
     @Body() input: CreateLessonInput,
   ): Promise<CreateLessonOutput> {
     return this.lessonService.createLesson(user, input);
+  }
+  @ApiOperation({
+    summary: 'Detail lesson ',
+  })
+  @Roles(['Any'])
+  @Get('detail/:id')
+  @ApiOkResponse({ type: DetailLessonOutput })
+  async detailLesson(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DetailLessonOutput> {
+    return this.lessonService.detailLesson(id);
+  }
+  @ApiOperation({
+    summary: 'Delete lesson ',
+  })
+  @Roles(['Professor'])
+  @Delete('delete/:id')
+  @ApiOkResponse({ type: DeleteLessonOutput })
+  async deleteLesson(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DeleteLessonOutput> {
+    return this.lessonService.deleteLesson(user, id);
   }
 }

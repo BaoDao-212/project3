@@ -6,14 +6,18 @@ import { LessonStudent } from 'src/entities/contant/lessonStudent';
 
 export class CreateLessonStudentInput {
   @ApiProperty({ description: 'course id of lesson' })
-  @IsString()
   courseStudentId: number;
 
   @ApiProperty({ description: 'lesson id ' })
-  @IsString()
   lessonId: number;
 }
-export class CreateLessonStudentOutput extends CoreOutput {}
+export class CreateLessonStudentOutput extends CoreOutput {
+  lessonStudent?: LessonStudent;
+}
+export class ListLessonStudentOutput extends CoreOutput {
+  @ApiProperty({ description: 'lesson student' })
+  lessonStudent?: LessonStudent[];
+}
 
 export class UpdateLessonStudentInput {
   @ApiProperty({ description: 'code current id of lesson' })
@@ -32,6 +36,14 @@ export class UpdateLessonStudentOutput extends CoreOutput {
   @ApiProperty({ description: 'output ' })
   @IsString()
   stdout?: string;
+
+  @ApiProperty({ description: 'status ' })
+  @IsString()
+  status?: string;
+
+  @ApiProperty({ description: 'output ' })
+  @IsString()
+  errorType?: string;
 
   @ApiProperty({ description: 'exitCode ' })
   @IsString()

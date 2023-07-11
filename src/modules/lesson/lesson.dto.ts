@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsString } from 'class-validator';
-import { Theory, TypeLesson } from 'src/entities/lesson.entity';
+import { Lesson, Theory, TypeLesson } from 'src/entities/lesson.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
 
 export class CreateLessonInput {
@@ -38,3 +39,8 @@ export class CreateLessonInput {
   answer: string;
 }
 export class CreateLessonOutput extends CoreOutput {}
+export class DeleteLessonOutput extends CoreOutput {}
+export class DetailLessonOutput extends CoreOutput {
+  @Type(() => Lesson)
+  lesson?: Lesson;
+}

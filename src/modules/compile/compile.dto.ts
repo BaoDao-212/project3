@@ -23,6 +23,10 @@ export class RunCodeOutput extends CoreOutput {
   @IsString()
   stderr?: string;
 
+  @ApiProperty({ description: 'error ' })
+  @IsString()
+  errorType?: string;
+
   @ApiProperty({ description: 'output ' })
   @IsString()
   stdout?: string;
