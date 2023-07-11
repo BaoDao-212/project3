@@ -16,14 +16,8 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from '../auth/role.decorator';
 import { CourseService } from './course.servive';
-import {
-  CreateCourseInput,
-  CreateCourseOutput,
-  DetailCourseOutput,
-  ListCourseOutput,
-  UpdateCourseInput,
-  UpdateCourseOutput,
-} from './course.dto';
+import { ChangeCourseInput, ChangeCourseOutput, CreateCourseInput, CreateCourseOutput, GetInfoCourseOutput,ListCourseOutput,UpdateCourseInput,
+  UpdateCourseOutput,DetailCourseOutput } from './course.dto';
 import { CurrentUser } from '../auth/user.decorator';
 import { User } from 'src/entities/user.entity';
 import { CoreOutput } from '../common/output.dto';
@@ -45,6 +39,32 @@ export class CourseResolver {
   ): Promise<CreateCourseOutput> {
     return this.courseService.createCourse(user, input);
   }
+
+
+  @ApiOperation({
+    summary: 'Get list Course',
+  })
+  @Roles(['Any'])
+  @Get('list-course')
+  @ApiOkResponse({ type: GetInfoCourseOutput })
+  async getInfoCourse(
+  ): Promise<GetInfoCourseOutput> {
+    return this.courseService.getInfoCourse();
+  }
+
+  @ApiOperation({
+    summary: 'Change Course',
+  })
+  @Roles(['Professor'])
+  @Post('change')
+  @ApiOkResponse({ type: ChangeCourseOutput })
+  async changeCourse(
+    @CurrentUser() user: User,
+    @Body() input: ChangeCourseInput,
+  ) {
+    return this.courseService.changeCourse(user,input);
+    }
+
   @ApiOperation({
     summary: 'List Course of Professor',
   })
@@ -55,6 +75,7 @@ export class CourseResolver {
     @CurrentUser() user: User,
   ): Promise<ListCourseOutput> {
     return this.courseService.listCourseProfessor(user);
+
   }
   @ApiOperation({
     summary: 'List Course ',
@@ -102,3 +123,4 @@ export class CourseResolver {
     return this.courseService.updateCourse(user, input);
   }
 }
+

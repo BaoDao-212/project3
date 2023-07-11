@@ -30,6 +30,7 @@ export class Theory {
   @ApiProperty()
   theory: string | object;
 
+
   @ApiProperty({ enum: TypeTheory, default: TypeTheory.Text })
   typeTheory: TypeTheory;
 }

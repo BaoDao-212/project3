@@ -17,3 +17,4 @@ export class ListStudentOutput extends CoreOutput {
   @ApiProperty({ description: 'list student' })
   students?: Student[];
 }
+

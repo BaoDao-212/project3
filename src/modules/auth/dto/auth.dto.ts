@@ -72,3 +72,11 @@ export class ChangePasswordInput {
 }
 
 export class ChangePasswordOutput extends CoreOutput {}
+export class ForgotPasswordInput {
+  @ApiProperty({ description: 'username' })
+  @IsString()
+  @MinLength(1)
+  name?: string;
+}
+export class ForgotPasswordOutput extends CoreOutput {}
+
