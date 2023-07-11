@@ -21,6 +21,7 @@ import {
   CreateCourseStudentInput,
   CreateCourseStudentOutput,
   DetailCourseStudentOutput,
+  ListCourseStudentOfProfessorOutput,
   ListCourseStudentOutput,
 } from './courseStudent.dto';
 
@@ -42,7 +43,7 @@ export class CourseStudentResolver {
     return this.courseStudentService.createCourseStudent(user, input);
   }
   @ApiOperation({
-    summary: 'Create couse student',
+    summary: 'list couse student',
   })
   @Roles(['Student'])
   @Get('list')
@@ -51,6 +52,17 @@ export class CourseStudentResolver {
     @CurrentUser() user: User,
   ): Promise<ListCourseStudentOutput> {
     return this.courseStudentService.listCourseStudent(user);
+  }
+  @ApiOperation({
+    summary: 'list couse student for professor',
+  })
+  @Roles(['Professor'])
+  @Get('/list-course-student/:id')
+  @ApiOkResponse({ type: ListCourseStudentOfProfessorOutput })
+  async listCourseStudentOfProfessor(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ListCourseStudentOfProfessorOutput> {
+    return this.courseStudentService.listCourseStudentOfProfessor(id);
   }
   @ApiOperation({
     summary: 'Create couse student',

@@ -93,7 +93,7 @@ export class LessonStudentService {
 
       return {
         ok: true,
-        lessonId: lessonStudent.id,
+        lessonStudent,
       };
     } catch (error) {
       console.log(error);
@@ -147,10 +147,8 @@ export class LessonStudentService {
         stdout,
         error,
       } = output;
-      console.log(stdout);
-      console.log(LessonStudent.lesson.answer);
 
-      if (stdout == decodeURIComponent(LessonStudent.lesson.answer)) {
+      if (encodeURIComponent(stdout) == LessonStudent.lesson.answer) {
         LessonStudent.status = Status.Correct;
       } else {
         LessonStudent.status = Status.Wrong;

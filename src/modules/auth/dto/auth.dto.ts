@@ -31,6 +31,10 @@ export class RegisterUserInput {
 }
 
 export class RegisterUserOutput extends CoreOutput {}
+export class ListUserOutput extends CoreOutput {
+  @ApiProperty({ description: 'list user' })
+  users?: User[];
+}
 
 export class LoginInput {
   @ApiProperty({ description: 'username' })

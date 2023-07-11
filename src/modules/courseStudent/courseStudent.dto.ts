@@ -13,6 +13,10 @@ export class ListCourseStudentOutput extends CoreOutput {
   @ApiProperty({ description: 'list course is register by this student' })
   course?: CourseStudent[];
 }
+export class ListCourseStudentOfProfessorOutput extends CoreOutput {
+  @ApiProperty({ description: 'list course is register by this student' })
+  courseData?: object[];
+}
 export class DetailCourseStudentOutput extends CoreOutput {
   @ApiProperty({ description: 'detail course is register by this student' })
   course?: CourseStudent;

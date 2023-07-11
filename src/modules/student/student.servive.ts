@@ -5,7 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { createError } from '../common/utils/createError';
-import { CreateUserInput, CreateUserOutput } from './student.dto';
+import {
+  CreateUserInput,
+  CreateUserOutput,
+  ListStudentOutput,
+} from './student.dto';
 import { Student } from 'src/entities/student.entity';
 import { Professor } from 'src/entities/professor.entity';
 
@@ -58,6 +62,20 @@ export class StudentService {
       await this.studentRepo.save(userH);
       return {
         ok: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async listStudent(): Promise<ListStudentOutput> {
+    try {
+      const students = await this.studentRepo.find({
+        relations: { user: true },
+      });
+      return {
+        ok: true,
+        students,
       };
     } catch (error) {
       console.log(error);

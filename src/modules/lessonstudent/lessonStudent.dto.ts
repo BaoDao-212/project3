@@ -12,8 +12,7 @@ export class CreateLessonStudentInput {
   lessonId: number;
 }
 export class CreateLessonStudentOutput extends CoreOutput {
-  @ApiProperty({ description: 'lesson id ' })
-  lessonId?: number;
+  lessonStudent?: LessonStudent;
 }
 export class ListLessonStudentOutput extends CoreOutput {
   @ApiProperty({ description: 'lesson student' })

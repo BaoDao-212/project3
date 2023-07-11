@@ -21,6 +21,9 @@ export class CreateCourseInput {
   @IsNumber()
   time: number;
 
+  @ApiProperty({ description: 'avatar of course' })
+  image: object;
+
   @ApiProperty({ description: 'number lesson of this course (lesson)' })
   @IsString()
   numberLesson: number;

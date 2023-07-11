@@ -36,7 +36,7 @@ export class CourseService {
     input: CreateCourseInput,
   ): Promise<CreateCourseOutput> {
     try {
-      const { description, language, name, numberLesson, time } = input;
+      const { description, language, name, numberLesson, time, image } = input;
       const course = await this.courseRepo.findOne({
         where: {
           name: name,
@@ -66,6 +66,7 @@ export class CourseService {
         professor: pro,
         time,
         numberLesson,
+        image,
       });
       console.log(CourseH);
 

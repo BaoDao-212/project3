@@ -10,6 +10,7 @@ import {
   RegisterUserOutput,
   ChangePasswordInput,
   ChangePasswordOutput,
+  ListUserOutput,
 } from './dto/auth.dto';
 import { Roles } from './role.decorator';
 import { CurrentUser } from './user.decorator';
@@ -67,5 +68,15 @@ export class AuthResolver {
     @Body() input: ChangePasswordInput,
   ): Promise<ChangePasswordOutput> {
     return this.authService.changePassword(user, input);
+  }
+  @ApiOperation({
+    summary: 'New Access Token User',
+  })
+  @Get('list')
+  @ApiOkResponse({ type: ListUserOutput })
+  @ApiSecurity('admin')
+  @Roles(['Professor'])
+  async listUser(@CurrentUser() user: User): Promise<ListUserOutput> {
+    return this.authService.listUser();
   }
 }

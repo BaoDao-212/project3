@@ -19,8 +19,8 @@ export class CompileService {
 
       let res;
       const decodedCode = decodeURIComponent(code);
-      console.log(decodedCode);
-      console.log(input);
+      // console.log(decodedCode);
+      // console.log(input);
 
       if (language === Language.C) {
         res = await c.runSource(decodedCode, { stdin: inputString });
@@ -41,7 +41,7 @@ export class CompileService {
         signal: res.signal,
         stderr: res.stderr,
         errorType: res.errorType,
-        stdout: res.stdout.replace(/\r?\n$/, ''),
+        stdout: res.stdout.replace(/\r\n/g, '\n'),
       };
     } catch (error) {
       return createError('Server', 'Lỗi server, thử lại sau');

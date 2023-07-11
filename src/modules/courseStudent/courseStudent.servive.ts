@@ -11,10 +11,11 @@ import {
   CreateCourseStudentInput,
   CreateCourseStudentOutput,
   DetailCourseStudentOutput,
+  ListCourseStudentOfProfessorOutput,
   ListCourseStudentOutput,
 } from './courseStudent.dto';
 import { CourseStudent } from 'src/entities/contant/courseStudent';
-import { LessonStudent } from 'src/entities/contant/lessonStudent';
+import { LessonStudent, Status } from 'src/entities/contant/lessonStudent';
 import { CompileService } from '../compile/compile.servive';
 import { Student } from 'src/entities/student.entity';
 
@@ -110,6 +111,54 @@ export class CourseStudentService {
       return {
         ok: true,
         course,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async listCourseStudentOfProfessor(
+    studentId: number,
+  ): Promise<ListCourseStudentOfProfessorOutput> {
+    try {
+      const student = await this.studentRepo.findOne({
+        where: {
+          id: studentId,
+        },
+      });
+      if (!student)
+        return createError('Access Error', 'Please try again later');
+      // kiểm tra khóa học này có tồn tại nữa không
+      const course = await this.courseStudentRepo.find({
+        where: {
+          student: { id: studentId },
+        },
+        relations: {
+          lessonStudents: { lesson: true },
+          course: { lessons: true },
+        },
+      });
+      const courseData = course.map((course) => {
+        return {
+          name: course.course.name,
+          language: course.course.language,
+          numberCorrectAnswer: course.lessonStudents.filter(
+            (ls) => ls.status == Status.Correct,
+          ).length,
+          numberWrongAnswer: course.lessonStudents.filter(
+            (ls) => ls.status == Status.Wrong,
+          ).length,
+          numberNewAnswer:
+            course.course.lessons.length -
+            course.lessonStudents.filter((ls) => ls.status == Status.Correct)
+              .length -
+            course.lessonStudents.filter((ls) => ls.status == Status.Wrong)
+              .length,
+        };
+      });
+      return {
+        ok: true,
+        courseData,
       };
     } catch (error) {
       console.log(error);
