@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from './base.entity';
 import { PrimaryGeneratedColumn, Column, Entity, ManyToOne } from 'typeorm';
 import {
-  IsBoolean,
   IsOptional,
   IsString,
   ValidateNested,

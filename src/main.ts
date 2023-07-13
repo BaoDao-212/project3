@@ -3,8 +3,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 import { setupSwagger } from './setup-swagger';
-import { ConfigService } from '@nestjs/config';
-import { ApiExceptionFilter } from './common/api-exception.filter';
+// import { ConfigService } from '@nestjs/config';
 import { ApiTransformInterceptor } from './common/api.transform';
 
 const SERVER_PORT = process.env.SERVER_PORT;
@@ -14,7 +13,7 @@ async function bootstrap() {
       credentials: true,
     },
   });
-  const config = app.get(ConfigService);
+  // const config = app.get(ConfigService);
 
   app.enableCors();
   // execption

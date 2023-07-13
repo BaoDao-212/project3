@@ -6,7 +6,7 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { createError } from '../common/utils/createError';
 import { Professor } from 'src/entities/professor.entity';
-import {  ChangeProfessorProFileInPut, CreateProfessorInput, CreateProfessorOutput, GetListLessonsOutput, GetProfessorProfileOutput } from './professor.dto';
+import {  ChangeProfessorProFileInPut, CreateProfessorInput, CreateProfessorOutput, GetDetailsProfessorOutput, GetListLessonsOutput, GetListOutput, GetProfessorProfileOutput } from './professor.dto';
 import { Student } from 'src/entities/student.entity';
 import { Lesson } from 'src/entities/lesson.entity';
 import { Course } from 'src/entities/course.entity';
@@ -75,7 +75,7 @@ export class ProfessorService {
   }
   async getProfessorProfile(input: User): Promise<GetProfessorProfileOutput> {
     try {
-      const user1= this.userRepo.findOne({
+      const user1= await this.userRepo.findOne({
         where: {
           id: input.id,
         },
@@ -132,7 +132,7 @@ async changeProfileProfessor(
 }
 async getListLessonsByCourseName(courseId:number,input: User):Promise <GetListLessonsOutput>{
 try {
-  const user1= this.userRepo.findOne({
+  const user1= await this.userRepo.findOne({
     where: {
       id: input.id,
     },
@@ -145,28 +145,13 @@ try {
       'User này là Student',
     );
   if(input.position==="Professor"){
-    // const {courseName}=courseName1
-    const professor=await this.professorRepo.findOne({
-      where: {
-       id : input.id
-      },
-      relations: {
-        user: true,
-      },
-    })
-    const course = await this.courseRepo.find({
-      where:{
-        professor:{
-          id: input.id
-        },
-        id:courseId,
-      },
-      relations:{professor:true,lessons:true}
-    });
     const lessons=await this.lessonRepo.find({
       where:{
         course:{
           id:courseId,
+          professor:{
+            id:input.id,
+          }
         }
       },
       relations:{
@@ -181,6 +166,54 @@ try {
 } catch (error) {
   console.log(error);
     return createError('Server', 'Lỗi server, thử lại sau');
+}
+}
+
+async getListProfessor(): Promise<GetListOutput> {
+  try {
+    const professors=await this.professorRepo.find({
+      where: {
+      },
+      relations: {
+        user: true,
+      },
+    })
+    return {
+        ok: true,
+        professors: professors,
+      };    
+}catch (error) {
+  console.log(error);
+  return createError('Server', 'Lỗi server, thử lại sau');
+}
+}
+
+async getDetails(Id:number,input:User): Promise<GetDetailsProfessorOutput> {
+  try {
+    const user=await this.userRepo.findOne({
+      where:{
+        id:input.id,
+      },
+    })
+    if(user.position==='Admin'){
+           const professor=await this.professorRepo.findOne({
+            where:{
+              id:Id,
+            }
+           })       
+            return {
+              ok: true,
+              professor: professor,
+            };      
+    }
+    else{
+      return createError('Input', 'Lỗi server, thử lại sau');
+    }
+
+    
+}catch (error) {
+  console.log(error);
+  return createError('Server', 'Lỗi server, thử lại sau');
 }
 }
 }
