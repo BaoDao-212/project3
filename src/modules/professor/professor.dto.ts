@@ -40,4 +40,5 @@ export class GetListOutput extends CoreOutput{
 export class GetDetailsProfessorOutput extends CoreOutput{
   @ApiProperty({ description: 'professor' })
   professor?: Professor;
+  numbers?:number;
 }

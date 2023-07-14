@@ -175,7 +175,8 @@ async getListProfessor(): Promise<GetListOutput> {
       where: {
       },
       relations: {
-        user: true,
+        user:true,
+        
       },
     })
     return {
@@ -199,11 +200,24 @@ async getDetails(Id:number,input:User): Promise<GetDetailsProfessorOutput> {
            const professor=await this.professorRepo.findOne({
             where:{
               id:Id,
+            },
+            relations:{
+              user:true,
             }
-           })       
+           })  
+           const numbers=await this.courseRepo.count({
+            where:{
+              professor:{
+                user:{
+                  id:Id,
+                }
+              }
+            }
+           })     
             return {
               ok: true,
-              professor: professor,
+              professor,
+              numbers,
             };      
     }
     else{

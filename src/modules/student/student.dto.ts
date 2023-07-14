@@ -17,4 +17,6 @@ export class CreateUserOutput extends CoreOutput {}
 export class GetDeTailsOutput extends CoreOutput {
   @ApiProperty({ description: 'Details Student' })
   student?: Student;
+  numbers?:number;
+
 }
