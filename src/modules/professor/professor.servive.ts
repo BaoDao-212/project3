@@ -171,22 +171,39 @@ try {
 
 async getListProfessor(): Promise<GetListOutput> {
   try {
-    const professors=await this.professorRepo.find({
-      where: {
-      },
+    const professors = await this.professorRepo.find({
       relations: {
-        user:true,
-        
+        user: true,
       },
-    })
+    });
+
+    const professorDetailsPromises = professors.map(async (professor) => {
+      const numbers = await this.courseRepo.count({
+        where: {
+          professor: {
+            user: {
+              id: professor.id,
+            },
+          },
+        },
+      });
+
+      return {
+        professor,
+        numbers,
+      };
+    });
+
+    const professorDetails = await Promise.all(professorDetailsPromises);
+
     return {
-        ok: true,
-        professors: professors,
-      };    
-}catch (error) {
-  console.log(error);
-  return createError('Server', 'Lỗi server, thử lại sau');
-}
+      ok: true,
+      professors: professorDetails,
+    };
+  } catch (error) {
+    console.log(error);
+    return createError('Server', 'Lỗi server, thử lại sau');
+  }
 }
 
 async getDetails(Id:number,input:User): Promise<GetDetailsProfessorOutput> {

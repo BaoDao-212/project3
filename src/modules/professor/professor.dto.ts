@@ -34,7 +34,8 @@ export class GetListLessonsOutput extends CoreOutput{
 }
 export class GetListOutput extends CoreOutput{
   @ApiProperty({ description: 'List Professor' })
-  professors?: Professor[];
+  professors?: Object[]
+  // numbers?:number[];
 }
 
 export class GetDetailsProfessorOutput extends CoreOutput{
