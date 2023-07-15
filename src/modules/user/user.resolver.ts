@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -11,7 +11,9 @@ import { CurrentUser } from '../auth/user.decorator';
 import { User } from 'src/entities/user.entity';
 import {
   ChangePasswordInput,
+  ChangePersonalInfoInput,
   ChangePasswordOutput,
+  ChangePersonalInfoOutput,
   GetInfoOutput,
 } from './user.dto';
 
@@ -19,7 +21,7 @@ import {
 @Controller('/account')
 @ApiSecurity('admin')
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
   @ApiOperation({
     summary: 'info user',
   })
@@ -30,6 +32,17 @@ export class UserResolver {
     console.log(input);
     return this.userService.getInfo(input);
   }
+
+  @Roles(['Any'])
+  @Put('/change-profile')
+  @ApiOkResponse({ type: ChangePersonalInfoOutput })
+  async changePersonalInfo(
+    @CurrentUser() user: User,
+    @Body() input: ChangePersonalInfoInput,
+  ) {
+    return this.userService.changePersonalInfo(user, input);
+  }
+
   @Roles(['Any'])
   @Post('/change-password')
   @ApiOkResponse({ type: ChangePasswordOutput })

@@ -52,7 +52,7 @@ export class User extends BaseEntity {
   // @OneToOne(() => Student, (student) => student.user)
   // profile: Student;
 
-  @Column( { nullable: true, default: '' })
+  @Column({ nullable: true, default: '' })
   @ApiProperty()
   phone?: string;
 
