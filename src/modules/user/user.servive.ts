@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from 'src/entities/user.entity';
@@ -19,7 +18,7 @@ export class UserService {
 
   async getInfo(input: User): Promise<GetInfoOutput> {
     try {
-      const user = this.userRepo.findOne({
+      const user = await this.userRepo.findOne({
         where: {
           id: input.id,
         },

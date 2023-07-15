@@ -8,7 +8,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import {
-  IsBoolean,
   IsOptional,
   IsString,
   ValidateNested,
