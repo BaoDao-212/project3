@@ -16,11 +16,23 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from '../auth/role.decorator';
 import { CourseService } from './course.servive';
-import { ChangeCourseInput, ChangeCourseOutput, CreateCourseInput, CreateCourseOutput, GetInfoCourseOutput,ListCourseOutput,UpdateCourseInput,
-  UpdateCourseOutput,DetailCourseOutput } from './course.dto';
+
+import {
+  ChangeCourseInput,
+  ChangeCourseOutput,
+  CreateCourseInput,
+  CreateCourseOutput,
+  GetInfoCourseOutput,
+  ListCourseOutput,
+  UpdateCourseInput,
+  UpdateCourseOutput,
+  DetailCourseOutput,
+  ListOverviewNotitiaWebOutput,
+} from './course.dto';
 import { CurrentUser } from '../auth/user.decorator';
 import { User } from 'src/entities/user.entity';
 import { CoreOutput } from '../common/output.dto';
+import { ListCourseStudentOutput } from '../courseStudent/courseStudent.dto';
 
 @ApiTags('Course')
 @Controller('/course')
@@ -40,15 +52,13 @@ export class CourseResolver {
     return this.courseService.createCourse(user, input);
   }
 
-
   @ApiOperation({
     summary: 'Get list Course',
   })
   @Roles(['Any'])
   @Get('list-course')
   @ApiOkResponse({ type: GetInfoCourseOutput })
-  async getInfoCourse(
-  ): Promise<GetInfoCourseOutput> {
+  async getInfoCourse(): Promise<GetInfoCourseOutput> {
     return this.courseService.getInfoCourse();
   }
 
@@ -62,8 +72,8 @@ export class CourseResolver {
     @CurrentUser() user: User,
     @Body() input: ChangeCourseInput,
   ) {
-    return this.courseService.changeCourse(user,input);
-    }
+    return this.courseService.changeCourse(user, input);
+  }
 
   @ApiOperation({
     summary: 'List Course of Professor',
@@ -75,7 +85,6 @@ export class CourseResolver {
     @CurrentUser() user: User,
   ): Promise<ListCourseOutput> {
     return this.courseService.listCourseProfessor(user);
-
   }
   @ApiOperation({
     summary: 'List Course ',
@@ -89,11 +98,25 @@ export class CourseResolver {
   @ApiOperation({
     summary: 'Detail course ',
   })
+  @ApiOperation({
+    summary: 'Top List Course ',
+  })
+  @Roles(['Professor', 'Admin'])
+  @Get('/stats/list/:id')
+  @ApiOkResponse({ type: ListCourseStudentOutput })
+  async listCourseStats(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ListCourseStudentOutput> {
+    return this.courseService.listOverviewNotitiaCourse(id, user);
+  }
+  @ApiOperation({
+    summary: 'Detail course ',
+  })
   @Roles(['Any'])
   @Get('detail/:id')
   @ApiOkResponse({ type: DetailCourseOutput })
   async detailCourse(
-    @CurrentUser() user: User,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<DetailCourseOutput> {
     return this.courseService.detailCourse(id);
@@ -122,5 +145,13 @@ export class CourseResolver {
   ): Promise<UpdateCourseOutput> {
     return this.courseService.updateCourse(user, input);
   }
+  @ApiOperation({
+    summary: 'list Overview Notitia Web',
+  })
+  @Roles(['Any'])
+  @Get('overview')
+  @ApiOkResponse({ type: ListOverviewNotitiaWebOutput })
+  async listOverviewNotitiaWeb(): Promise<ListOverviewNotitiaWebOutput> {
+    return this.courseService.listOverviewNotitiaWeb();
+  }
 }
-

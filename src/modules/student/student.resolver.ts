@@ -38,10 +38,10 @@ export class StudentResolver {
   @Get('list')
   @ApiOkResponse({ type: ListStudentOutput })
   async listStudent(): Promise<ListStudentOutput> {
-    return this.StudentService.listStudent();
+    return this.studentService.listStudent();
   }
   // async xoasinhvien(@Body() input )
-  
+
   @ApiOperation({
     summary: 'Get details student by Id',
   })
@@ -53,5 +53,4 @@ export class StudentResolver {
     @CurrentUser() input: User
   ){
     return this.studentService.getDetails(Id,input);
-  }
 }

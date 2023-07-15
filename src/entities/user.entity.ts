@@ -37,7 +37,7 @@ export class User extends BaseEntity {
 
   @Column('enum', {
     enum: Position,
-    default: Position.Professor,
+    default: Position.Student,
   })
   @ApiProperty()
   position?: Position;

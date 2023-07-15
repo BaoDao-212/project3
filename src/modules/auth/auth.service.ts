@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JsonWebTokenError, sign, verify } from 'jsonwebtoken';
 
-
 import { Position, User } from 'src/entities/user.entity';
 // import {Mailer}
 import { Repository } from 'typeorm';
@@ -20,6 +19,7 @@ import {
   RegisterUserOutput,
 } from './dto/auth.dto';
 import { createError } from '../common/utils/createError';
+import { hash } from 'bcrypt';
 import {
   ACCESS_TOKEN_EXPIRED_IN,
   ACCESS_TOKEN_SECRET,
@@ -75,7 +75,6 @@ export class AuthService {
         },
         select: ['id', 'password'],
       });
-
       if (!user)
         return createError('Input', 'Người dùng không tồn tại trên hệ thống');
       if (!(await user.checkPassword(password)))
@@ -187,21 +186,22 @@ export class AuthService {
   }
 
   // TODO: Triển khai quên mật khẩu (khi chọn được dịch vụ SMS phù hợp)
-  async forgotPassword(input: ForgotPasswordInput,){
-    const {name}=input
+  async forgotPassword(input: ForgotPasswordInput) {
+    const { name } = input;
     try {
       const user = await this.userRepo.findOne({
         where: {
-          username:name,
+          username: name,
         },
       });
       if (!user) return createError('Input', 'Tài khoản không tồn tại');
-      if(!user.email) return createError('Input', 'Tài khoản này chưa có email');
-    const randomPassword = generateRandomPassword(8); // Độ dài mật khẩu 8 ký tự
-      user.password=randomPassword;
+      if (!user.email)
+        return createError('Input', 'Tài khoản này chưa có email');
+      const randomPassword = generateRandomPassword(8); // Độ dài mật khẩu 8 ký tự
+      user.password = randomPassword;
       await this.userRepo.save(user);
-       
-       sendEmail(randomPassword,user.email);
+
+      sendEmail(randomPassword, user.email);
 
       return {
         ok: true,
@@ -213,20 +213,20 @@ export class AuthService {
   }
 }
 const generateRandomPassword = (length: number): string => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let password = '';
-  
+
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     password += characters.charAt(randomIndex);
   }
-  
+
   return password;
 };
 
-
 // Hàm gửi email với mật khẩu mới
-async function sendEmail(newPassword,email) {
+async function sendEmail(newPassword, email) {
   const nodemailer = require('nodemailer');
 
   try {

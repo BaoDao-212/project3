@@ -13,7 +13,6 @@ import {
   ListUserOutput,
   ForgotPasswordOutput,
   ForgotPasswordInput,
-
 } from './dto/auth.dto';
 import { Roles } from './role.decorator';
 import { CurrentUser } from './user.decorator';
@@ -82,19 +81,16 @@ export class AuthResolver {
   @Roles(['Professor'])
   async listUser(@CurrentUser() user: User): Promise<ListUserOutput> {
     return this.authService.listUser();
-
+  }
 
   @ApiOperation({
     summary: 'For Get Password',
   })
   @Post('forgot-password')
   @ApiOkResponse({ type: ForgotPasswordOutput })
-  // @ApiSecurity('admin')
-  
   async forgetPassword(
     @Body() input: ForgotPasswordInput,
   ): Promise<ForgotPasswordOutput> {
     return this.authService.forgotPassword(input);
-
   }
 }
