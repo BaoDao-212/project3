@@ -37,7 +37,7 @@ export class User extends BaseEntity {
 
   @Column('enum', {
     enum: Position,
-    default: Position.Professor,
+    default: Position.Student,
   })
   @ApiProperty()
   position?: Position;
@@ -57,7 +57,6 @@ export class User extends BaseEntity {
     if (!this.password) return;
     this.password = await hash(this.password, 12);
   }
-
   async checkPassword(password: string): Promise<boolean> {
     return await compare(password, this.password);
   }

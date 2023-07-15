@@ -6,9 +6,16 @@ import { Repository, In } from 'typeorm';
 import { createError } from '../common/utils/createError';
 import { Professor } from 'src/entities/professor.entity';
 
-
-
-import { ChangeCourseInput, ChangeCourseOutput, CreateCourseInput, CreateCourseOutput, GetInfoCourseOutput,ListCourseOutput, DetailCourseOutput, UpdateCourseInput } from './course.dto';
+import {
+  ChangeCourseInput,
+  ChangeCourseOutput,
+  CreateCourseInput,
+  CreateCourseOutput,
+  GetInfoCourseOutput,
+  ListCourseOutput,
+  DetailCourseOutput,
+  UpdateCourseInput,
+} from './course.dto';
 
 import { User } from 'src/entities/user.entity';
 import { CoreOutput } from '../common/output.dto';
@@ -170,18 +177,17 @@ export class CourseService {
       return {
         ok: true,
         course,
-            };
+      };
     } catch (error) {
       console.log(error);
       return createError('Server', 'Lỗi server, thử lại sau');
     }
   }
 
-
   async getInfoCourse(): Promise<GetInfoCourseOutput> {
     try {
       const courses = await this.courseRepo.find({
-        relations:{professor:true,lessons:true}
+        relations: { professor: true, lessons: true },
       });
       return {
         ok: true,
@@ -282,14 +288,21 @@ export class CourseService {
       await this.courseRepo.save(course);
       await this.courseRepo.delete({ id: courseId });
       lessonIDs.forEach(async (id) => await this.lessonRepo.delete({ id: id }));
-
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
   async changeCourse(
     professor: User,
     input: ChangeCourseInput,
   ): Promise<ChangeCourseOutput> {
     try {
       const { description, language, name, numberLesson, time } = input;
-      
+
       const pro = await this.professorRepo.findOne({
         where: {
           user: {
@@ -301,24 +314,24 @@ export class CourseService {
       if (!pro) return createError('Input', 'Professor không hợp lệ');
       const course = await this.courseRepo.findOne({
         where: {
-        professor:{
-          id:professor.id,
-        }
+          professor: {
+            id: professor.id,
+          },
         },
       });
 
-      if(!course) return createError('Input','Không có khóa học nào');
+      if (!course) return createError('Input', 'Không có khóa học nào');
       if (numberLesson < 0 || time < 0)
         return createError(
           'Input',
           'Số tiết học hoặc tổng số giờ học không hợp lệ',
         );
-      
-      course.name=name;
-      course.numberLesson=numberLesson;
-      course.time=time;
-      course.language=language;
-      course.description=description;
+
+      course.name = name;
+      course.numberLesson = numberLesson;
+      course.time = time;
+      course.language = language;
+      course.description = description;
       await this.courseRepo.save(course);
       return {
         ok: true,

@@ -55,21 +55,13 @@ export class UpdateCourseInput {
   image: StoredFile;
 }
 export class UpdateCourseOutput extends CoreOutput {}
-export class CreateCourseOutput extends CoreOutput {
-  @ApiProperty({
-    description: 'number lesson of this course (lesson)',
-    type: Course,
 
-  })
-  course?: Course;
+export class GetInfoCourseOutput extends CoreOutput {
+  @ApiProperty({ description: 'List of course' })
+  courses?: Course[];
 }
 
-export class GetInfoCourseOutput extends CoreOutput{
-  @ApiProperty({description:"List of course"})
-  courses?:Course[];
-}
-
-export class ChangeCourseInput{
+export class ChangeCourseInput {
   @ApiProperty({ description: 'name of course' })
   @IsString()
   name: string;
@@ -89,7 +81,6 @@ export class ChangeCourseInput{
   @IsString()
   numberLesson: number;
 }
-
 
 export class ChangeCourseOutput extends CoreOutput {}
 export class CreateCourseOutput extends CoreOutput {
@@ -116,4 +107,3 @@ export class DetailCourseOutput extends CoreOutput {
   @Type(() => Course)
   course?: Course;
 }
-

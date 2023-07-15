@@ -56,7 +56,7 @@ export class CourseStudentResolver {
   @ApiOperation({
     summary: 'list couse student for professor',
   })
-  @Roles(['Professor'])
+  @Roles(['Professor', 'Admin'])
   @Get('/list-course-student/:id')
   @ApiOkResponse({ type: ListCourseStudentOfProfessorOutput })
   async listCourseStudentOfProfessor(

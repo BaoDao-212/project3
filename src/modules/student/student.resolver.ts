@@ -8,7 +8,8 @@ import {
 import {
   CreateUserInput,
   CreateUserOutput,
-  ListStudentOutput,GetDeTailsOutput
+  ListStudentOutput,
+  GetDeTailsOutput,
 } from './student.dto';
 import { StudentService } from './student.servive';
 import { Roles } from '../auth/role.decorator';
@@ -38,20 +39,17 @@ export class StudentResolver {
   @Get('list')
   @ApiOkResponse({ type: ListStudentOutput })
   async listStudent(): Promise<ListStudentOutput> {
-    return this.StudentService.listStudent();
+    return this.studentService.listStudent();
   }
   // async xoasinhvien(@Body() input )
-  
+
   @ApiOperation({
     summary: 'Get details student by Id',
   })
   @Roles(['Admin']) //Any
   @Get('/details-student/:Id/admin') // Use the courseName as a parameter in the URL
-  @ApiOkResponse({ type: GetDeTailsOutput}) // Assuming the Lesson interface from the ProfessorService
-  async getDetails(
-    @Param('Id') Id: number,
-    @CurrentUser() input: User
-  ){
-    return this.studentService.getDetails(Id,input);
+  @ApiOkResponse({ type: GetDeTailsOutput }) // Assuming the Lesson interface from the ProfessorService
+  async getDetails(@Param('Id') Id: number, @CurrentUser() input: User) {
+    return this.studentService.getDetails(Id, input);
   }
 }

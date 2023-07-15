@@ -28,6 +28,10 @@ export class RegisterUserInput {
   @IsString()
   @ApiProperty()
   email?: string;
+  @ApiProperty({ description: 'position' })
+  @IsString()
+  @ApiProperty()
+  position?: string;
 }
 
 export class RegisterUserOutput extends CoreOutput {}
@@ -79,4 +83,3 @@ export class ForgotPasswordInput {
   name?: string;
 }
 export class ForgotPasswordOutput extends CoreOutput {}
-
