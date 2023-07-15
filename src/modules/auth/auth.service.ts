@@ -19,6 +19,7 @@ import {
   RegisterUserOutput,
 } from './dto/auth.dto';
 import { createError } from '../common/utils/createError';
+import { hash } from 'bcrypt';
 import {
   ACCESS_TOKEN_EXPIRED_IN,
   ACCESS_TOKEN_SECRET,
@@ -76,7 +77,6 @@ export class AuthService {
         },
         select: ['id', 'password'],
       });
-
       if (!user)
         return createError('Input', 'Người dùng không tồn tại trên hệ thống');
       if (!(await user.checkPassword(password)))

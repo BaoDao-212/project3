@@ -8,6 +8,7 @@ import { Course } from 'src/entities/course.entity';
 import { Lesson } from 'src/entities/lesson.entity';
 import { CourseStudent } from 'src/entities/contant/courseStudent';
 import { LessonStudent } from 'src/entities/contant/lessonStudent';
+import { Student } from 'src/entities/student.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LessonStudent } from 'src/entities/contant/lessonStudent';
       Lesson,
       CourseStudent,
       LessonStudent,
+      Student,
     ]),
   ],
   providers: [CourseResolver, CourseService],

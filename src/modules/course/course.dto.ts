@@ -4,6 +4,7 @@ import { IsNumber, IsString } from 'class-validator';
 import { Course, Language } from 'src/entities/course.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
 import { StoredFile } from '../upload/object/StoredFile';
+import { CourseStudent } from 'src/entities/contant/courseStudent';
 
 export class CreateCourseInput {
   @ApiProperty({ description: 'name of course' })
@@ -59,6 +60,9 @@ export class UpdateCourseOutput extends CoreOutput {}
 export class GetInfoCourseOutput extends CoreOutput {
   @ApiProperty({ description: 'List of course' })
   courses?: Course[];
+export class GetInfoCourseOutput extends CoreOutput {
+  @ApiProperty({ description: 'List of course' })
+  courses?: Course[];
 }
 
 export class ChangeCourseInput {
@@ -106,4 +110,43 @@ export class DetailCourseOutput extends CoreOutput {
   })
   @Type(() => Course)
   course?: Course;
+}
+// chi tiết khóa học của người dùng
+export class ListOverviewNotitiaWebOutput extends CoreOutput {
+  @ApiProperty({
+    description: 'danh sach bài làm tốt nhất',
+  })
+  courseStudent?: CourseStudent[];
+  @ApiProperty({
+    description: 'danh sach bài làm tốt nhất',
+  })
+  course?: Course[];
+  @ApiProperty({
+    description: 'số khóa học',
+  })
+  numberCourse?: number;
+  @ApiProperty({
+    description: 'số sinh viên',
+  })
+  numberStudent?: number;
+  @ApiProperty({
+    description: 'số sinh viên mới đăng kí trong tháng này',
+  })
+  numberNewStudent?: number;
+  @ApiProperty({
+    description: 'số khóa học  đã được đăng kí',
+  })
+  numberCourseStudent?: number;
+  @ApiProperty({
+    description: 'số khóa học  đã được đăng kí mới trong tháng này',
+  })
+  numberNewCourseStudent?: number;
+  @ApiProperty({
+    description: 'số tiết học đã được đăng kí',
+  })
+  numberLesson?: number;
+  @ApiProperty({
+    description: 'số tiết học  đã được đăng kí mới trong tháng này',
+  })
+  numberNewLesson?: number;
 }

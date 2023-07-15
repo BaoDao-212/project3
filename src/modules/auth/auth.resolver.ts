@@ -97,7 +97,6 @@ export class AuthResolver {
   })
   @Post('forgot-password')
   @ApiOkResponse({ type: ForgotPasswordOutput })
-  // @ApiSecurity('admin')
   async forgetPassword(
     @Body() input: ForgotPasswordInput,
   ): Promise<ForgotPasswordOutput> {

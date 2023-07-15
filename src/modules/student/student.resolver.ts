@@ -40,6 +40,7 @@ export class StudentResolver {
   @ApiOkResponse({ type: ListStudentOutput })
   async listStudent(): Promise<ListStudentOutput> {
     return this.studentService.listStudent();
+    return this.studentService.listStudent();
   }
   // async xoasinhvien(@Body() input )
 
