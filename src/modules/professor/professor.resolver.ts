@@ -6,11 +6,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../auth/role.decorator';
-import {  ChangeProfessorProFileInPut, ChangeProfessorProFileOutput, CreateProfessorInput, CreateProfessorOutput, GetListLessonsOutput, GetProfessorProfileOutput } from './professor.dto';
+import {  ChangeProfessorProFileInPut, ChangeProfessorProFileOutput, CreateProfessorInput, CreateProfessorOutput, GetListLessonsOutput, GetListOutput, GetProfessorProfileOutput } from './professor.dto';
 import { ProfessorService } from './professor.servive';
 import { User } from 'src/entities/user.entity';
 import { CurrentUser } from '../auth/user.decorator';
 import { Lesson } from 'src/entities/lesson.entity';
+import { GetDeTailsOutput } from '../student/student.dto';
 
 @ApiTags('Professor')
 @Controller('/professor')
@@ -54,13 +55,39 @@ export class ProfessorResolver {
     summary: 'Get the list of lessons for a course by course name',
   })
   @Roles(['Professor'])
-  @Get('/:courseName/list-lessons') // Use the courseName as a parameter in the URL
+  @Get('/:courseId/list-lessons') // Use the courseName as a parameter in the URL
   @ApiOkResponse({ type: GetListLessonsOutput}) // Assuming the Lesson interface from the ProfessorService
   async getListLessonsByCourseName(
-    @Param('courseName') courseName: string,
+    @Param('courseId') courseId: number,
     @CurrentUser() input: User
   ){
-    return this.professorService.getListLessonsByCourseName(courseName,input);
+    return this.professorService.getListLessonsByCourseName(courseId,input);
+  }
+
+  @ApiOperation({
+    summary: 'Get list Professor',
+  })
+  @Roles(['Admin'])
+  @Get('/list/admin') // Use the courseName as a parameter in the URL
+  @ApiOkResponse({ type: GetListOutput}) 
+  async getListProfessor(
+    
+  ){
+    return this.professorService.getListProfessor();
+  }
+
+  @ApiOperation({
+    summary: 'Get Details Professor',
+  })
+  @Roles(['Admin'])
+  @Get('/details-professor/:id/admin') // Use the courseName as a parameter in the URL
+  @ApiOkResponse({ type: GetDeTailsOutput}) 
+  async getDetails(
+    @Param('id') id: number,
+    @CurrentUser() input: User
+  ){
+    return this.professorService.getDetails(id,input);
   }
 
 }
+

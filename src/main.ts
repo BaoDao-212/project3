@@ -3,8 +3,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 import { setupSwagger } from './setup-swagger';
-import { ConfigService } from '@nestjs/config';
-import { ApiExceptionFilter } from './common/api-exception.filter';
+// import { ConfigService } from '@nestjs/config';
 import { ApiTransformInterceptor } from './common/api.transform';
 
 const SERVER_PORT = process.env.SERVER_PORT;
@@ -14,24 +13,9 @@ async function bootstrap() {
       credentials: true,
     },
   });
-  const config = app.get(ConfigService);
-  const t = encodeURIComponent(
-    `#include <stdio.h>
 
-    int main() {
-        int n, i, sum = 0;
-        scanf("%d", &n);
-        int arr[n];
-        for (i = 0; i < n; i++) {
-            scanf("%d", &arr[i]);
-            sum += arr[i];
-        }
-        printf(" %d", sum);
-        return 0;
-    }
-    `,
-  );
-  console.log(t);
+  const config = app.get(ConfigService);
+
   app.enableCors();
   // execption
   // app.useGlobalFilters(new ApiExceptionFilter(app.get(LoggerService)));

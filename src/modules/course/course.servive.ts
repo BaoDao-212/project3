@@ -7,6 +7,7 @@ import { createError } from '../common/utils/createError';
 import { Professor } from 'src/entities/professor.entity';
 
 
+
 import { ChangeCourseInput, ChangeCourseOutput, CreateCourseInput, CreateCourseOutput, GetInfoCourseOutput,ListCourseOutput, DetailCourseOutput, UpdateCourseInput } from './course.dto';
 
 import { User } from 'src/entities/user.entity';
@@ -78,6 +79,7 @@ export class CourseService {
       return createError('Server', 'Lỗi server, thử lại sau');
     }
   }
+
   //update khóa học
   async updateCourse(
     professor: User,
@@ -122,6 +124,7 @@ export class CourseService {
       return createError('Server', 'Lỗi server, thử lại sau');
     }
   }
+
   async listCourseProfessor(professor: User): Promise<ListCourseOutput> {
     try {
       const pro = await this.professorRepo.findOne({

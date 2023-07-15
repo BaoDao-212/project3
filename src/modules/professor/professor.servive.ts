@@ -6,7 +6,7 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { createError } from '../common/utils/createError';
 import { Professor } from 'src/entities/professor.entity';
-import {  ChangeProfessorProFileInPut, CreateProfessorInput, CreateProfessorOutput, GetListLessonsOutput, GetProfessorProfileOutput } from './professor.dto';
+import {  ChangeProfessorProFileInPut, CreateProfessorInput, CreateProfessorOutput, GetDetailsProfessorOutput, GetListLessonsOutput, GetListOutput, GetProfessorProfileOutput } from './professor.dto';
 import { Student } from 'src/entities/student.entity';
 import { Lesson } from 'src/entities/lesson.entity';
 import { Course } from 'src/entities/course.entity';
@@ -75,7 +75,7 @@ export class ProfessorService {
   }
   async getProfessorProfile(input: User): Promise<GetProfessorProfileOutput> {
     try {
-      const user1= this.userRepo.findOne({
+      const user1= await this.userRepo.findOne({
         where: {
           id: input.id,
         },
@@ -130,9 +130,9 @@ async changeProfileProfessor(
       return createError('Server', 'Lỗi server, thử lại sau');
     }
 }
-async getListLessonsByCourseName(courseName:string,input: User):Promise <GetListLessonsOutput>{
+async getListLessonsByCourseName(courseId:number,input: User):Promise <GetListLessonsOutput>{
 try {
-  const user1= this.userRepo.findOne({
+  const user1= await this.userRepo.findOne({
     where: {
       id: input.id,
     },
@@ -145,22 +145,15 @@ try {
       'User này là Student',
     );
   if(input.position==="Professor"){
-    // const {courseName}=courseName1
-    const professor=await this.professorRepo.findOne({
-      where: {
-       id : input.id
-      },
-      relations: {
-        user: true,
-      },
-    })
-    const course = await this.courseRepo.find({
-      where:{
-        name:courseName,
-      },
-      relations:{professor:true,lessons:true}
-    });
     const lessons=await this.lessonRepo.find({
+      where:{
+        course:{
+          id:courseId,
+          professor:{
+            id:input.id,
+          }
+        }
+      },
       relations:{
         course:true,
       }
@@ -173,6 +166,85 @@ try {
 } catch (error) {
   console.log(error);
     return createError('Server', 'Lỗi server, thử lại sau');
+}
+}
+
+async getListProfessor(): Promise<GetListOutput> {
+  try {
+    const professors = await this.professorRepo.find({
+      relations: {
+        user: true,
+      },
+    });
+
+    const professorDetailsPromises = professors.map(async (professor) => {
+      const numbers = await this.courseRepo.count({
+        where: {
+          professor: {
+            user: {
+              id: professor.id,
+            },
+          },
+        },
+      });
+
+      return {
+        professor,
+        numbers,
+      };
+    });
+
+    const professorDetails = await Promise.all(professorDetailsPromises);
+
+    return {
+      ok: true,
+      professors: professorDetails,
+    };
+  } catch (error) {
+    console.log(error);
+    return createError('Server', 'Lỗi server, thử lại sau');
+  }
+}
+
+async getDetails(Id:number,input:User): Promise<GetDetailsProfessorOutput> {
+  try {
+    const user=await this.userRepo.findOne({
+      where:{
+        id:input.id,
+      },
+    })
+    if(user.position==='Admin'){
+           const professor=await this.professorRepo.findOne({
+            where:{
+              id:Id,
+            },
+            relations:{
+              user:true,
+            }
+           })  
+           const numbers=await this.courseRepo.count({
+            where:{
+              professor:{
+                user:{
+                  id:Id,
+                }
+              }
+            }
+           })     
+            return {
+              ok: true,
+              professor,
+              numbers,
+            };      
+    }
+    else{
+      return createError('Input', 'Lỗi server, thử lại sau');
+    }
+
+    
+}catch (error) {
+  console.log(error);
+  return createError('Server', 'Lỗi server, thử lại sau');
 }
 }
 }
