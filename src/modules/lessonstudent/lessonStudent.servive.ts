@@ -10,10 +10,13 @@ import { Course } from 'src/entities/course.entity';
 import {
   CreateLessonStudentInput,
   CreateLessonStudentOutput,
+  DetailLessonStudentOutput,
+  ListLessonStudentOutput,
   UpdateLessonStudentInput,
+  UpdateLessonStudentOutput,
 } from './lessonStudent.dto';
 import { CourseStudent } from 'src/entities/contant/courseStudent';
-import { LessonStudent } from 'src/entities/contant/lessonStudent';
+import { LessonStudent, Status } from 'src/entities/contant/lessonStudent';
 import { CompileService } from '../compile/compile.servive';
 
 @Injectable()
@@ -36,17 +39,32 @@ export class LessonStudentService {
   ): Promise<CreateLessonStudentOutput> {
     try {
       const { courseStudentId, lessonId } = input;
+      // kiểm tra xem lesson này đã được người dùng này đăng kí trước đó hay chưa
+      const lessonStudentCheck = await this.lessonStudentRepo.findOne({
+        where: {
+          lesson: {
+            id: lessonId,
+          },
+          courseStudent: {
+            id: courseStudentId,
+          },
+        },
+      });
+      if (lessonStudentCheck)
+        return createError(
+          'Error Operation',
+          'Bài học này đã được đăng ký vào trước đó,hãy bắt đầu vào làm bài',
+        );
       const courseStudent = await this.courseStudentRepo.findOne({
         where: {
           id: courseStudentId,
         },
         relations: {
-          student: {
-            user: true,
-          },
           course: true,
+          student: { user: true },
         },
       });
+
       if (!courseStudent)
         return createError(
           'Input',
@@ -71,10 +89,11 @@ export class LessonStudentService {
         lesson,
         courseStudent,
       });
-      this.lessonStudentRepo.save(lessonStudent);
+      await this.lessonStudentRepo.save(lessonStudent);
 
       return {
         ok: true,
+        lessonStudent,
       };
     } catch (error) {
       console.log(error);
@@ -83,14 +102,22 @@ export class LessonStudentService {
   }
   async updateLessonStudent(
     student: User,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     inputUpdate: UpdateLessonStudentInput,
-  ): Promise<CreateLessonStudentOutput> {
+  ): Promise<UpdateLessonStudentOutput> {
     try {
       const { codeCurrent, lessonStudentId } = inputUpdate;
+      // console.log(inputUpdate);
       const LessonStudent = await this.lessonStudentRepo.findOne({
         where: {
           id: lessonStudentId,
+        },
+        relations: {
+          courseStudent: {
+            student: { user: true },
+          },
+          lesson: {
+            course: true,
+          },
         },
       });
       if (!LessonStudent)
@@ -102,17 +129,112 @@ export class LessonStudentService {
         return createError('Input', 'Lỗi truy cập, vui lòng thử lại');
       const language = LessonStudent.lesson.course.language;
       const input = LessonStudent.lesson.input;
-      const output = this.compileService.runCode({
+      const output = await this.compileService.runCode({
         inputString: input,
         language,
         code: codeCurrent,
       });
-      console.log(output);
+      // console.log(output);
+
+      const {
+        cpuUsage,
+        exitCode,
+        memoryUsage,
+        ok,
+        errorType,
+        signal,
+        stderr,
+        stdout,
+        error,
+      } = output;
+
+      if (encodeURIComponent(stdout) == LessonStudent.lesson.answer) {
+        LessonStudent.status = Status.Correct;
+      } else {
+        LessonStudent.status = Status.Wrong;
+      }
+      LessonStudent.codeCurrent = codeCurrent;
+      await this.lessonStudentRepo.save(LessonStudent);
       return {
         ok: true,
+        status: LessonStudent.status,
+        cpuUsage,
+        exitCode,
+        memoryUsage,
+        signal,
+        stderr,
+        stdout,
+        error,
+        errorType,
       };
     } catch (error) {
       console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  // xem chi  tiết khóa học cho người dùng
+  async detailLessonStudent(
+    student: User,
+    idLessonStudent: number,
+  ): Promise<DetailLessonStudentOutput> {
+    try {
+      const lessonStudent = await this.lessonStudentRepo.findOne({
+        where: {
+          id: idLessonStudent,
+        },
+        relations: {
+          lesson: {
+            course: {
+              professor: true,
+            },
+          },
+          courseStudent: {
+            student: { user: true },
+          },
+        },
+      });
+      if (!lessonStudent)
+        return createError('Input', 'Yêu cầu này không hợp lệ');
+      if (lessonStudent.courseStudent.student.user.id !== student.id)
+        return createError('Lỗi truy cập', 'Truy cập không hợp lệ ');
+
+      return {
+        ok: true,
+        lessonStudent,
+      };
+    } catch (error) {
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async listLessonStudent(
+    student: User,
+    courseId: number,
+  ): Promise<ListLessonStudentOutput> {
+    try {
+      const lessonStudent = await this.lessonStudentRepo.find({
+        where: {
+          courseStudent: {
+            student: { user: { id: student.id } },
+            course: { id: courseId },
+          },
+        },
+        relations: {
+          lesson: {
+            course: {
+              professor: true,
+            },
+          },
+          courseStudent: {
+            student: { user: true },
+          },
+        },
+      });
+
+      return {
+        ok: true,
+        lessonStudent,
+      };
+    } catch (error) {
       return createError('Server', 'Lỗi server, thử lại sau');
     }
   }

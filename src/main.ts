@@ -13,7 +13,8 @@ async function bootstrap() {
       credentials: true,
     },
   });
-  // const config = app.get(ConfigService);
+
+  const config = app.get(ConfigService);
 
   app.enableCors();
   // execption

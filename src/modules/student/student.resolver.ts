@@ -5,7 +5,11 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateUserInput, CreateUserOutput, GetDeTailsOutput } from './student.dto';
+import {
+  CreateUserInput,
+  CreateUserOutput,
+  ListStudentOutput,GetDeTailsOutput
+} from './student.dto';
 import { StudentService } from './student.servive';
 import { Roles } from '../auth/role.decorator';
 import { User } from 'src/entities/user.entity';
@@ -26,6 +30,15 @@ export class StudentResolver {
     @Body() input: CreateUserInput,
   ): Promise<CreateUserOutput> {
     return this.studentService.createUser(input);
+  }
+  @ApiOperation({
+    summary: 'list student',
+  })
+  @Roles(['Professor', 'Admin']) //Any
+  @Get('list')
+  @ApiOkResponse({ type: ListStudentOutput })
+  async listStudent(): Promise<ListStudentOutput> {
+    return this.StudentService.listStudent();
   }
   // async xoasinhvien(@Body() input )
   

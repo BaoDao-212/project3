@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, MinLength } from 'class-validator';
 import { Student } from 'src/entities/student.entity';
 import { CoreOutput } from 'src/modules/common/output.dto';
 
@@ -13,6 +13,10 @@ export class CreateUserInput {
   class: string;
 }
 export class CreateUserOutput extends CoreOutput {}
+export class ListStudentOutput extends CoreOutput {
+  @ApiProperty({ description: 'list student' })
+  students?: Student[];
+}
 
 export class GetDeTailsOutput extends CoreOutput {
   @ApiProperty({ description: 'Details Student' })

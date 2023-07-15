@@ -5,7 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { createError } from '../common/utils/createError';
-import { CreateUserInput, CreateUserOutput, GetDeTailsOutput } from './student.dto';
+import {
+  CreateUserInput,
+  CreateUserOutput,
+  ListStudentOutput,GetDeTailsOutput
+} from './student.dto';
+
 import { Student } from 'src/entities/student.entity';
 import { Professor } from 'src/entities/professor.entity';
 import { CourseStudent } from 'src/entities/contant/courseStudent';
@@ -67,7 +72,6 @@ export class StudentService {
       return createError('Server', 'Lỗi server, thử lại sau');
     }
   }
- 
   async getDetails(Id:number,input:User): Promise<GetDeTailsOutput> {
     try {
       const user=await this.userRepo.findOne({
@@ -102,11 +106,25 @@ export class StudentService {
       else{
         return createError('Input', 'Lỗi server, thử lại sau');
       }
-
-      
-  }catch (error) {
-    console.log(error);
-    return createError('Server', 'Lỗi server, thử lại sau');
+   }catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
   }
-}
+  async listStudent(): Promise<ListStudentOutput> {
+    try {
+      const students = await this.studentRepo.find({
+        relations: { user: true },
+      });
+      return {
+        ok: true,
+        students,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+
+ 
 }

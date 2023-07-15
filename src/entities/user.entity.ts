@@ -46,12 +46,6 @@ export class User extends BaseEntity {
   @ApiProperty()
   email?: string;
 
-  // @Column({ nullable: true})
-  // @ApiProperty()
-  // @JoinColumn()
-  // @OneToOne(() => Student, (student) => student.user)
-  // profile: Student;
-
   @Column({ nullable: true, default: '' })
   @ApiProperty()
   phone?: string;

@@ -12,7 +12,7 @@ import { CourseStudent } from './courseStudent';
 import { Lesson } from '../lesson.entity';
 import { IsString } from 'class-validator';
 export enum Status {
-  Corret = 'Corret',
+  Correct = 'Correct',
   Wrong = 'Wrong',
   New = 'New',
 }
@@ -35,8 +35,9 @@ export class LessonStudent extends BaseEntity {
   codeCurrent: string;
 
   @ApiProperty()
-  @JoinColumn()
-  @OneToOne(() => Lesson, (lesson) => lesson.id)
+  @ManyToOne(() => Lesson, (lesson) => lesson.id, {
+    cascade: ['update'],
+  })
   lesson: Lesson;
 
   @Column({ default: Status.New })

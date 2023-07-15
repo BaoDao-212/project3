@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from './base.entity';
-import { PrimaryGeneratedColumn, Column, Entity, ManyToOne } from 'typeorm';
+import {
+  PrimaryGeneratedColumn,
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import {
   IsOptional,
   IsString,
@@ -9,6 +15,7 @@ import {
 import { Course } from './course.entity';
 import { StoredFile } from 'src/modules/upload/object/StoredFile';
 import { Type } from 'class-transformer';
+import { LessonStudent } from './contant/lessonStudent';
 export enum TypeLesson {
   MultipleChoice = 'MultipleChoice',
   Code = 'Code',
@@ -16,11 +23,12 @@ export enum TypeLesson {
 export enum TypeTheory {
   Text = 'Text',
   Media = 'Media',
-  HighLightCode = 'HighLightCode',
+  Code = 'Code',
 }
 export class Theory {
   @ApiProperty()
-  theory: string|object;
+  theory: string | object;
+
 
   @ApiProperty({ enum: TypeTheory, default: TypeTheory.Text })
   typeTheory: TypeTheory;
@@ -33,8 +41,15 @@ export class Lesson extends BaseEntity {
   id: number;
 
   @ApiProperty()
-  @ManyToOne(() => Course, (course) => course.lessons)
+  @ManyToOne(() => Course, (course) => course.lessons, {
+    cascade: ['update'],
+  })
   course: Course;
+  // @ApiProperty()
+  // @OneToMany(() => LessonStudent, (LessonStudents) => LessonStudents.lesson, {
+  //   cascade: ['update'],
+  // })
+  // lessonStudents: LessonStudent[];
 
   @Column()
   @ApiProperty()
