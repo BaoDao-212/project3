@@ -27,7 +27,7 @@ export class UserResolver {
   @Get('info')
   @ApiOkResponse({ type: GetInfoOutput })
   async getInfo(@CurrentUser() input: User) {
-    console.log(input);
+    console.log(input+" test3");
     return this.userService.getInfo(input);
   }
   // Đây là phần để cấp quyền truy cập cho từng loại người dùng vào hệ thống ở đây 

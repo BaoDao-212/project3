@@ -17,7 +17,7 @@ import { Roles } from '../auth/role.decorator';
 @Controller('/student')
 @ApiSecurity('admin')
 export class StudentResolver {
-  constructor(private readonly StudentService: StudentService) {}
+  constructor(private readonly studentService: StudentService) {}
   @ApiOperation({
     summary: 'Create User',
   })
@@ -27,7 +27,7 @@ export class StudentResolver {
   async registerUser(
     @Body() input: CreateUserInput,
   ): Promise<CreateUserOutput> {
-    return this.StudentService.createUser(input);
+    return this.studentService.createUser(input);
   }
   @ApiOperation({
     summary: 'list student',
@@ -36,7 +36,7 @@ export class StudentResolver {
   @Get('list')
   @ApiOkResponse({ type: ListStudentOutput })
   async listStudent(): Promise<ListStudentOutput> {
-    return this.StudentService.listStudent();
+    return this.studentService.listStudent();
   }
   // async xoasinhvien(@Body() input )
 }
