@@ -21,12 +21,14 @@ import {
   CreateCourseOutput,
   DetailCourseOutput,
   ListCourseOutput,
+  ListOverviewNotitiaWebOutput,
   UpdateCourseInput,
   UpdateCourseOutput,
 } from './course.dto';
 import { CurrentUser } from '../auth/user.decorator';
 import { User } from 'src/entities/user.entity';
 import { CoreOutput } from '../common/output.dto';
+import { ListCourseStudentOutput } from '../courseStudent/courseStudent.dto';
 
 @ApiTags('Course')
 @Controller('/course')
@@ -68,11 +70,25 @@ export class CourseResolver {
   @ApiOperation({
     summary: 'Detail course ',
   })
+  @ApiOperation({
+    summary: 'Top List Course ',
+  })
+  @Roles(['Professor', 'Admin'])
+  @Get('/stats/list/:id')
+  @ApiOkResponse({ type: ListCourseStudentOutput })
+  async listCourseStats(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ListCourseStudentOutput> {
+    return this.courseService.listOverviewNotitiaCourse(id, user);
+  }
+  @ApiOperation({
+    summary: 'Detail course ',
+  })
   @Roles(['Any'])
   @Get('detail/:id')
   @ApiOkResponse({ type: DetailCourseOutput })
   async detailCourse(
-    @CurrentUser() user: User,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<DetailCourseOutput> {
     return this.courseService.detailCourse(id);
@@ -100,5 +116,14 @@ export class CourseResolver {
     @Body() input: UpdateCourseInput,
   ): Promise<UpdateCourseOutput> {
     return this.courseService.updateCourse(user, input);
+  }
+  @ApiOperation({
+    summary: 'list Overview Notitia Web',
+  })
+  @Roles(['Any'])
+  @Get('overview')
+  @ApiOkResponse({ type: ListOverviewNotitiaWebOutput })
+  async listOverviewNotitiaWeb(): Promise<ListOverviewNotitiaWebOutput> {
+    return this.courseService.listOverviewNotitiaWeb();
   }
 }
