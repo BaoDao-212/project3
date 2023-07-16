@@ -29,7 +29,6 @@ export class UserResolver {
   @Get('info')
   @ApiOkResponse({ type: GetInfoOutput })
   async getInfo(@CurrentUser() input: User) {
-    console.log(input+" test3");
     return this.userService.getInfo(input);
   }
 

@@ -9,7 +9,9 @@ import { createError } from '../common/utils/createError';
 import {
   CreateUserInput,
   CreateUserOutput,
-  ListStudentOutput,GetDeTailsOutput,GetInfoStudent
+  ListStudentOutput,
+  GetDeTailsOutput,
+  GetInfoStudent,
 } from './student.dto';
 
 import { Student } from 'src/entities/student.entity';
@@ -28,108 +30,106 @@ export class StudentService {
     private readonly courseStudentRepo: Repository<CourseStudent>,
   ) {}
 
-    async getInfo(input: User): Promise<GetInfoStudent> {
-        try {
-            const student = await this.studentRepo.findOne({
-                where: {
-                    user: { id: input.id }
-                },
-                relations: {
-                    user: true,
-                },
-            });
-            if (!student) return createError('Input', 'Người dùng không hợp lệ');
-            return {
-                ok: true,
-                student: student,
-            };
-        } catch (error) {
-            return createError('Server', 'Lỗi server, thử lại sau');
-        }
-    }
-
-    async createUser(input: CreateUserInput): Promise<CreateUserOutput> {
-        try {
-            const { userId } = input;
-            const user = await this.userRepo.findOne({
-                where: {
-                    id: userId,
-                },
-            });
-            if (!user) return createError('Input', 'Người dùng này không tồn tại');
-            const student = await this.studentRepo.findOne({
-                where: {
-                    user: { id: userId },
-                },
-                relations: {
-                    user: true,
-                },
-            });
-            const professor = await this.professorRepo.findOne({
-                where: {
-                    user: { id: userId },
-                },
-                relations: {
-                    user: true,
-                },
-            });
-            if (professor)
-                return createError(
-                    'Input',
-                    'User này đã được cấp quyền Professor trước đó',
-                );
-            if (student) return createError('Input', 'Student này đã tồn tại');
-            const userH = this.studentRepo.create({
-                averageMark: 0,
-                class: input.class,
-                user,
-            });
-            await this.studentRepo.save(userH);
-            return {
-                ok: true,
-            };
-        } catch (error) {
-            console.log(error);
-            return createError('Server', 'Lỗi server, thử lại sau');
-        }
-    }
-
-  }
-  async getDetails(Id:number,input:User): Promise<GetDeTailsOutput> {
+  async getInfo(input: User): Promise<GetInfoStudent> {
     try {
-      const user=await this.userRepo.findOne({
-        where:{
-          id:input.id,
+      const student = await this.studentRepo.findOne({
+        where: {
+          user: { id: input.id },
         },
-      })
-      if(user.position==='Admin'){
-             const student=await this.studentRepo.findOne({
-              where:{
-                id:Id,
+        relations: {
+          user: true,
+        },
+      });
+      if (!student) return createError('Input', 'Người dùng không hợp lệ');
+      return {
+        ok: true,
+        student: student,
+      };
+    } catch (error) {
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+
+  async createUser(input: CreateUserInput): Promise<CreateUserOutput> {
+    try {
+      const { userId } = input;
+      const user = await this.userRepo.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      if (!user) return createError('Input', 'Người dùng này không tồn tại');
+      const student = await this.studentRepo.findOne({
+        where: {
+          user: { id: userId },
+        },
+        relations: {
+          user: true,
+        },
+      });
+      const professor = await this.professorRepo.findOne({
+        where: {
+          user: { id: userId },
+        },
+        relations: {
+          user: true,
+        },
+      });
+      if (professor)
+        return createError(
+          'Input',
+          'User này đã được cấp quyền Professor trước đó',
+        );
+      if (student) return createError('Input', 'Student này đã tồn tại');
+      const userH = this.studentRepo.create({
+        averageMark: 0,
+        class: input.class,
+        user,
+      });
+      await this.studentRepo.save(userH);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+
+  async getDetails(Id: number, input: User): Promise<GetDeTailsOutput> {
+    try {
+      const user = await this.userRepo.findOne({
+        where: {
+          id: input.id,
+        },
+      });
+      if (user.position === 'Admin') {
+        const student = await this.studentRepo.findOne({
+          where: {
+            id: Id,
+          },
+          relations: {
+            user: true,
+          },
+        });
+        const numbers = await this.courseStudentRepo.count({
+          where: {
+            student: {
+              user: {
+                id: Id,
               },
-              relations:{
-                user:true,
-              }
-             }) 
-             const numbers=await this.courseStudentRepo.count({
-              where:{
-                student:{
-                  user:{
-                    id:Id,
-                  }
-                }
-              }
-             })    
-              return {
-                ok: true,
-                student,
-                numbers,
-              };      
-      }
-      else{
+            },
+          },
+        });
+        return {
+          ok: true,
+          student,
+          numbers,
+        };
+      } else {
         return createError('Input', 'Lỗi server, thử lại sau');
       }
-   }catch (error) {
+    } catch (error) {
       console.log(error);
       return createError('Server', 'Lỗi server, thử lại sau');
     }
@@ -148,5 +148,4 @@ export class StudentService {
       return createError('Server', 'Lỗi server, thử lại sau');
     }
   }
-
 }

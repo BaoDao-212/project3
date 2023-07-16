@@ -78,11 +78,20 @@ export class AuthResolver {
   @Get('list')
   @ApiOkResponse({ type: ListUserOutput })
   @ApiSecurity('admin')
-  @Roles(['Professor'])
-  async listUser(@CurrentUser() user: User): Promise<ListUserOutput> {
+  @Roles(['Professor', 'Admin'])
+  async listUser(): Promise<ListUserOutput> {
     return this.authService.listUser();
   }
-
+  @ApiOperation({
+    summary: 'New Access Token User',
+  })
+  @Get('list-professor')
+  @ApiOkResponse({ type: ListUserOutput })
+  @ApiSecurity('admin')
+  @Roles(['Admin'])
+  async listUserProfessor(): Promise<ListUserOutput> {
+    return this.authService.listUserProfessor();
+  }
   @ApiOperation({
     summary: 'For Get Password',
   })

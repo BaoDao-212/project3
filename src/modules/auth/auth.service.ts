@@ -39,6 +39,7 @@ export class AuthService {
     name,
     username,
     confirmPassword,
+    position,
   }: RegisterUserInput): Promise<RegisterUserOutput> {
     try {
       if (password !== confirmPassword)
@@ -55,6 +56,7 @@ export class AuthService {
         email,
         name,
         username,
+        position: position == 'Student' ? Position.Student : Position.Professor,
       });
 
       await this.userRepo.save(userH);
@@ -106,6 +108,24 @@ export class AuthService {
       const users = await this.userRepo.find({
         where: {
           position: Position.Student,
+        },
+        select: ['email', 'id', 'name', 'phone', 'position', 'username'],
+      });
+      return {
+        ok: true,
+        users,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  // danh sách người dùng
+  async listUserProfessor(): Promise<ListUserOutput> {
+    try {
+      const users = await this.userRepo.find({
+        where: {
+          position: Position.Professor,
         },
         select: ['email', 'id', 'name', 'phone', 'position', 'username'],
       });
@@ -187,7 +207,7 @@ export class AuthService {
 
   // TODO: Triển khai quên mật khẩu (khi chọn được dịch vụ SMS phù hợp)
   async forgotPassword(input: ForgotPasswordInput) {
-    const { name } = input;
+    const { name, email } = input;
     try {
       const user = await this.userRepo.findOne({
         where: {
@@ -197,12 +217,12 @@ export class AuthService {
       if (!user) return createError('Input', 'Tài khoản không tồn tại');
       if (!user.email)
         return createError('Input', 'Tài khoản này chưa có email');
+      if (user.email != email)
+        return createError('Input', 'Email này không hợp lệ');
       const randomPassword = generateRandomPassword(8); // Độ dài mật khẩu 8 ký tự
       user.password = randomPassword;
       await this.userRepo.save(user);
-
       sendEmail(randomPassword, user.email);
-
       return {
         ok: true,
       };

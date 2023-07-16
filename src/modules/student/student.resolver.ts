@@ -1,4 +1,3 @@
-
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiOkResponse,
@@ -9,7 +8,9 @@ import {
 import {
   CreateUserInput,
   CreateUserOutput,
-  ListStudentOutput,GetDeTailsOutput,GetInfoStudent
+  ListStudentOutput,
+  GetDeTailsOutput,
+  GetInfoStudent,
 } from './student.dto';
 
 import { StudentService } from './student.servive';
@@ -21,7 +22,7 @@ import { CurrentUser } from '../auth/user.decorator';
 @Controller('/student')
 @ApiSecurity('admin')
 export class StudentResolver {
-  constructor(private readonly StudentService: StudentService) { }
+  constructor(private readonly studentService: StudentService) {}
 
   @ApiOperation({
     summary: 'Get Info student',
@@ -30,7 +31,7 @@ export class StudentResolver {
   @Get('profile')
   @ApiOkResponse({ type: GetInfoStudent })
   async getInfo(@CurrentUser() input: User): Promise<CreateUserOutput> {
-    return this.StudentService.getInfo(input);
+    return this.studentService.getInfo(input);
   }
 
   @ApiOperation({
@@ -60,10 +61,8 @@ export class StudentResolver {
   })
   @Roles(['Admin']) //Any
   @Get('/details-student/:Id/admin') // Use the courseName as a parameter in the URL
-  @ApiOkResponse({ type: GetDeTailsOutput}) // Assuming the Lesson interface from the ProfessorService
-  async getDetails(
-    @Param('Id') Id: number,
-    @CurrentUser() input: User
-  ){
-    return this.studentService.getDetails(Id,input);
+  @ApiOkResponse({ type: GetDeTailsOutput }) // Assuming the Lesson interface from the ProfessorService
+  async getDetails(@Param('Id') Id: number, @CurrentUser() input: User) {
+    return this.studentService.getDetails(Id, input);
+  }
 }
