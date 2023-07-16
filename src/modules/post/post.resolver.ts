@@ -25,6 +25,7 @@ import {
   ListPostOfLessonInput,
   ListPostOfLessonOutput,
   ListPublicPostOutput,
+  NumberPostComment,
   UpdatePostInput,
   UpdatePostOutput,
 } from './post.dto';
@@ -82,10 +83,12 @@ export class PostResolver {
   })
   @Roles(['Any'])
   @ApiSecurity('admin')
-  @Get('list')
+  @Get('course/list/:id')
   @ApiOkResponse({ type: ListPublicPostOutput })
-  async listpublicPost(): Promise<ListPublicPostOutput> {
-    return this.postService.listPublicPost();
+  async listpublicPost(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ListPublicPostOutput> {
+    return this.postService.listPostCourse(id);
   }
   // xem list bài đăng công khai của một cá nhân khi vào trang cá nhân của người đó
   @ApiOperation({
@@ -100,5 +103,17 @@ export class PostResolver {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ListPostOfLessonOutput> {
     return this.postService.listPostOfLesson(user, id);
+  }
+  @ApiOperation({
+    summary: 'number post comment',
+  })
+  @Roles(['Any'])
+  @ApiSecurity('admin')
+  @Get('lesson/count')
+  @ApiOkResponse({ type: NumberPostComment })
+  async numberNewPost(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<NumberPostComment> {
+    return this.postService.numberNewPost(id);
   }
 }
