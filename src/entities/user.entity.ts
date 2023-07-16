@@ -46,6 +46,7 @@ export class User extends BaseEntity {
   @ApiProperty()
   email?: string;
 
+
   @Column({ nullable: true, default: '' })
   @ApiProperty()
   phone?: string;

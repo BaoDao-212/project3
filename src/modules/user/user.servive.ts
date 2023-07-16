@@ -5,7 +5,9 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { createError } from '../common/utils/createError';
 import {
+  ChangePersonalInfoInput,
   ChangePasswordInput,
+  ChangePersonalInfoOutput,
   ChangePasswordOutput,
   GetInfoOutput,
 } from './user.dto';
@@ -14,7 +16,7 @@ import {
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
-  ) {}
+  ) { }
 
   async getInfo(input: User): Promise<GetInfoOutput> {
     try {
@@ -27,6 +29,45 @@ export class UserService {
       return {
         ok: true,
         user: input,
+      };
+    } catch (error) {
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+
+  async changePersonalInfo(
+    currentUser: User,
+    input: ChangePersonalInfoInput,
+  ): Promise<ChangePersonalInfoOutput> {
+    try {
+      const { newName, newEmail, newPhone } = input;
+      const user = await this.userRepo.findOne({
+        where: { id: currentUser.id },
+        select: ['id'],
+      });
+
+      //kiem tra User ton tai khong
+      if (!user) createError('Input', 'Người dùng không tồn tại');
+
+      //kiem tra tên mới trống trống hay khong
+      if (!newName)
+        return createError('Input', 'Tên người dùng không được bỏ trống');
+      user.name = newName;
+
+      //Kiem tra email mới trống hay khong
+      if (!newEmail)
+        return createError('Input', 'Email không được bỏ trống');
+      user.email = newEmail;
+
+      //kiem tra SĐT mới trống hay khong
+      if (!newPhone)
+        return createError('Input', 'SĐT không được bỏ trống');
+      user.phone = newPhone;
+
+      await this.userRepo.save(user);
+      return {
+        ok: true,
+        // 'message': 'Thay đổi thông tin thành công'
       };
     } catch (error) {
       return createError('Server', 'Lỗi server, thử lại sau');
