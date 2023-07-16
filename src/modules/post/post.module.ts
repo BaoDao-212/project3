@@ -6,9 +6,10 @@ import { PostService } from './post.service';
 import { Post } from 'src/entities/post.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { Lesson } from 'src/entities/lesson.entity';
+import { Course } from 'src/entities/course.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Post, Comment, Lesson])],
+  imports: [TypeOrmModule.forFeature([User, Post, Comment, Lesson, Course])],
   providers: [PostResolver, PostService],
   controllers: [PostResolver],
 })

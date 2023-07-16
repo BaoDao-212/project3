@@ -65,6 +65,12 @@ export class ListPublicPostOutput extends CoreOutput {
   @Type(() => Post)
   posts?: Post[];
 }
+export class NumberPostComment extends CoreOutput {
+  @ApiProperty({ description: 'number post ' })
+  numberPost?: number;
+  @ApiProperty({ description: 'number comment ' })
+  numberComment?: number;
+}
 //xem đanh sách bài đăng công khai của một cá nhân
 export class ListPostOfLessonInput {
   @ApiProperty({ description: 'user id  of post to show' })

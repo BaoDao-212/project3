@@ -10,19 +10,21 @@ import {
   CreatePostOutput,
   DeletePostInput,
   DeletePostOutput,
-  ListPostOfLessonInput,
   ListPostOfLessonOutput,
   ListPublicPostOutput,
+  NumberPostComment,
   UpdatePostInput,
   UpdatePostOutput,
 } from './post.dto';
 import { Comment } from 'src/entities/comment.entity';
 import { Lesson } from 'src/entities/lesson.entity';
+import { Course } from 'src/entities/course.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepo: Repository<Post>,
+    @InjectRepository(Course) private readonly courseRepo: Repository<Course>,
     @InjectRepository(Comment)
     private readonly commentRepo: Repository<Comment>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
@@ -128,21 +130,34 @@ export class PostService {
     }
   }
   //danh sach bai dang cong khai
-  async listPublicPost(): Promise<ListPublicPostOutput> {
+  async listPostCourse(courseId: number): Promise<ListPublicPostOutput> {
     try {
       // Calculate date 10 days ago
       const now = new Date();
       const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
-
+      const course = await this.courseRepo.findOne({
+        where: {
+          id: courseId,
+        },
+        relations: { lessons: true },
+      });
+      if (!course)
+        return createError(
+          'Input',
+          'Không thể xem chi tiết bài đăng của khóa học không tồn tại',
+        );
+      const lessonId = course.lessons.map((l) => l.id);
       const posts = await this.postRepo.find({
         where: {
           createdAt: Between(tenDaysAgo, now), // Use Between operator to filter posts created within the last 10 days
+          lesson: { id: In(lessonId) },
         },
         relations: {
           owner: true,
           comments: {
             owner: true,
           },
+          lesson: true,
         },
         order: {
           createdAt: 'DESC',
@@ -172,6 +187,7 @@ export class PostService {
           comments: {
             owner: true,
           },
+          lesson: true,
         },
         order: {
           createdAt: 'DESC',
@@ -180,6 +196,38 @@ export class PostService {
       return {
         ok: true,
         posts,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async numberNewPost(lessonId: number): Promise<NumberPostComment> {
+    try {
+      const now = new Date();
+      const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
+
+      const [posts, numberPost] = await this.postRepo.findAndCount({
+        where: {
+          createdAt: Between(tenDaysAgo, now), // Use Between operator to filter posts created within the last 10 days
+          lesson: {
+            id: lessonId,
+          },
+        },
+        relations: {
+          lesson: true,
+          owner: true,
+          comments: {
+            owner: true,
+          },
+        },
+      });
+      let numberComment = 0;
+      posts.forEach((post) => (numberComment += post.comments.length));
+      return {
+        ok: true,
+        numberPost,
+        numberComment,
       };
     } catch (error) {
       console.log(error);
