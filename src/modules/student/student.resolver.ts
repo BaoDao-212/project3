@@ -1,3 +1,4 @@
+
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiOkResponse,
@@ -8,8 +9,9 @@ import {
 import {
   CreateUserInput,
   CreateUserOutput,
-  ListStudentOutput,GetDeTailsOutput
+  ListStudentOutput,GetDeTailsOutput,GetInfoStudent
 } from './student.dto';
+
 import { StudentService } from './student.servive';
 import { Roles } from '../auth/role.decorator';
 import { User } from 'src/entities/user.entity';
@@ -19,7 +21,18 @@ import { CurrentUser } from '../auth/user.decorator';
 @Controller('/student')
 @ApiSecurity('admin')
 export class StudentResolver {
-  constructor(private readonly studentService: StudentService) {}
+  constructor(private readonly StudentService: StudentService) { }
+
+  @ApiOperation({
+    summary: 'Get Info student',
+  })
+  @Roles(['Any']) //Any
+  @Get('profile')
+  @ApiOkResponse({ type: GetInfoStudent })
+  async getInfo(@CurrentUser() input: User): Promise<CreateUserOutput> {
+    return this.StudentService.getInfo(input);
+  }
+
   @ApiOperation({
     summary: 'Create User',
   })

@@ -7,6 +7,15 @@ export class GetInfoOutput extends CoreOutput {
   user?: User;
 }
 
+export class ChangePersonalInfoInput {
+  @ApiProperty({ description: 'name' })
+  newName: string;
+  @ApiProperty({ description: 'email' })
+  newEmail: string;
+  @ApiProperty({ description: 'phone' })
+  newPhone: string;
+}
+
 export class ChangePasswordInput {
   @ApiProperty({ description: 'password' })
   oldPassword: string;
@@ -16,4 +25,5 @@ export class ChangePasswordInput {
   confirmNewPassword: string;
 }
 
-export class ChangePasswordOutput extends CoreOutput {}
+export class ChangePersonalInfoOutput extends CoreOutput { }
+export class ChangePasswordOutput extends CoreOutput { }
