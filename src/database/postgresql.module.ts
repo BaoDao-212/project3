@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Comment } from 'src/entities/comment.entity';
 import { CourseStudent } from 'src/entities/contant/courseStudent';
 import { LessonStudent } from 'src/entities/contant/lessonStudent';
 import { Course } from 'src/entities/course.entity';
 import { Lesson } from 'src/entities/lesson.entity';
+import { Post } from 'src/entities/post.entity';
 import { Professor } from 'src/entities/professor.entity';
 import { Student } from 'src/entities/student.entity';
 import { User } from 'src/entities/user.entity';
@@ -29,6 +31,8 @@ import { User } from 'src/entities/user.entity';
         Course,
         CourseStudent,
         LessonStudent,
+        Comment,
+        Post,
       ],
       synchronize: true,
       ...(process.env.NODE_ENV === 'production'

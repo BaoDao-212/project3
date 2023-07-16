@@ -15,6 +15,8 @@ import { UploadModule } from './modules/upload/upload.module';
 import { FirebaseModule } from './modules/firebase/firebase.module';
 import { LessonStudentModule } from './modules/lessonstudent/lessonStudent.module';
 import { CourseStudentModule } from './modules/courseStudent/courseStudent.module';
+import { PostModule } from './modules/post/post.module';
+import { CommentModule } from './modules/comment/comment.module';
 
 @Module({
   imports: [
@@ -41,6 +43,9 @@ import { CourseStudentModule } from './modules/courseStudent/courseStudent.modul
     UploadModule,
     LessonStudentModule,
     CourseStudentModule,
+    UserModule,
+    PostModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
