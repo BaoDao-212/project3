@@ -60,9 +60,6 @@ export class UpdateCourseOutput extends CoreOutput {}
 export class GetInfoCourseOutput extends CoreOutput {
   @ApiProperty({ description: 'List of course' })
   courses?: Course[];
-export class GetInfoCourseOutput extends CoreOutput {
-  @ApiProperty({ description: 'List of course' })
-  courses?: Course[];
 }
 
 export class ChangeCourseInput {

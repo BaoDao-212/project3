@@ -207,7 +207,7 @@ export class AuthService {
 
   // TODO: Triển khai quên mật khẩu (khi chọn được dịch vụ SMS phù hợp)
   async forgotPassword(input: ForgotPasswordInput) {
-    const { name } = input;
+    const { name, email } = input;
     try {
       const user = await this.userRepo.findOne({
         where: {
@@ -217,12 +217,12 @@ export class AuthService {
       if (!user) return createError('Input', 'Tài khoản không tồn tại');
       if (!user.email)
         return createError('Input', 'Tài khoản này chưa có email');
+      if (user.email != email)
+        return createError('Input', 'Email này không hợp lệ');
       const randomPassword = generateRandomPassword(8); // Độ dài mật khẩu 8 ký tự
       user.password = randomPassword;
       await this.userRepo.save(user);
-
       sendEmail(randomPassword, user.email);
-
       return {
         ok: true,
       };

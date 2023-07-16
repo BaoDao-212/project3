@@ -79,7 +79,9 @@ export class ChangePasswordOutput extends CoreOutput {}
 export class ForgotPasswordInput {
   @ApiProperty({ description: 'username' })
   @IsString()
-  @MinLength(1)
   name?: string;
+  @ApiProperty({ description: 'email' })
+  @IsString()
+  email?: string;
 }
 export class ForgotPasswordOutput extends CoreOutput {}
