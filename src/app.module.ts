@@ -11,6 +11,10 @@ import { UserModule } from './modules/user/user.module';
 import { CompileModule } from './modules/compile/compile.module';
 import { CourseModule } from './modules/course/course.module';
 import { LessonModule } from './modules/lesson/lesson.module';
+import { UploadModule } from './modules/upload/upload.module';
+import { FirebaseModule } from './modules/firebase/firebase.module';
+import { LessonStudentModule } from './modules/lessonstudent/lessonStudent.module';
+import { CourseStudentModule } from './modules/courseStudent/courseStudent.module';
 
 @Module({
   imports: [
@@ -18,6 +22,13 @@ import { LessonModule } from './modules/lesson/lesson.module';
       isGlobal: true,
       envFilePath: '.env',
       load: [getConfiguration],
+    }),
+    FirebaseModule.forRoot({
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      appId: process.env.FIREBASE_APP_ID,
     }),
     DatabaseModule,
     AuthModule,
@@ -27,6 +38,9 @@ import { LessonModule } from './modules/lesson/lesson.module';
     CompileModule,
     CourseModule,
     LessonModule,
+    UploadModule,
+    LessonStudentModule,
+    CourseStudentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

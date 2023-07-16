@@ -5,19 +5,28 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { createError } from '../common/utils/createError';
-import { GetInfoStudent, CreateUserInput, CreateUserOutput } from './student.dto';
+
+import {
+  CreateUserInput,
+  CreateUserOutput,
+  ListStudentOutput,GetDeTailsOutput,GetInfoStudent
+} from './student.dto';
+
 import { Student } from 'src/entities/student.entity';
 import { Professor } from 'src/entities/professor.entity';
+import { CourseStudent } from 'src/entities/contant/courseStudent';
 
 @Injectable()
 export class StudentService {
-    constructor(
-        @InjectRepository(User) private readonly userRepo: Repository<User>,
-        @InjectRepository(Student)
-        private readonly studentRepo: Repository<Student>,
-        @InjectRepository(Professor)
-        private readonly professorRepo: Repository<Professor>,
-    ) { }
+  constructor(
+    @InjectRepository(User) private readonly userRepo: Repository<User>,
+    @InjectRepository(Student)
+    private readonly studentRepo: Repository<Student>,
+    @InjectRepository(Professor)
+    private readonly professorRepo: Repository<Professor>,
+    @InjectRepository(CourseStudent)
+    private readonly courseStudentRepo: Repository<CourseStudent>,
+  ) {}
 
     async getInfo(input: User): Promise<GetInfoStudent> {
         try {
@@ -84,4 +93,60 @@ export class StudentService {
             return createError('Server', 'Lỗi server, thử lại sau');
         }
     }
+
+  }
+  async getDetails(Id:number,input:User): Promise<GetDeTailsOutput> {
+    try {
+      const user=await this.userRepo.findOne({
+        where:{
+          id:input.id,
+        },
+      })
+      if(user.position==='Admin'){
+             const student=await this.studentRepo.findOne({
+              where:{
+                id:Id,
+              },
+              relations:{
+                user:true,
+              }
+             }) 
+             const numbers=await this.courseStudentRepo.count({
+              where:{
+                student:{
+                  user:{
+                    id:Id,
+                  }
+                }
+              }
+             })    
+              return {
+                ok: true,
+                student,
+                numbers,
+              };      
+      }
+      else{
+        return createError('Input', 'Lỗi server, thử lại sau');
+      }
+   }catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+  async listStudent(): Promise<ListStudentOutput> {
+    try {
+      const students = await this.studentRepo.find({
+        relations: { user: true },
+      });
+      return {
+        ok: true,
+        students,
+      };
+    } catch (error) {
+      console.log(error);
+      return createError('Server', 'Lỗi server, thử lại sau');
+    }
+  }
+
 }

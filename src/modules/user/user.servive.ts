@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from 'src/entities/user.entity';
@@ -87,7 +86,7 @@ export class UserService {
       });
 
       //kiem tra User ton tai khong
-      if (!user) createError('Input', 'Người dùng không tồn tại');
+      if (!user) return createError('Input', 'Người dùng không tồn tại');
 
       //kiem tra mat khau hien tai dung hay khong
       if (!(await user.checkPassword(oldPassword)))

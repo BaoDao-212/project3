@@ -15,28 +15,21 @@ export class CompileService {
 
   async runCode(input: RunCodeInput): Promise<RunCodeOutput> {
     try {
-      const { code, language, inputArray, inputString } = input;
-      const t = encodeURIComponent(
-        `#include <stdio.h>
-        int main() {
-            int a=0, b=0, sum;
-            sum = a + b;
-            printf("Tổng hai số là: %d\\n", sum);
-            return 0;
-        }
-        `,
-      );
-      console.log(t);
+      const { code, language, inputString } = input;
+
       let res;
       const decodedCode = decodeURIComponent(code);
+      // console.log(decodedCode);
+      // console.log(input);
+
       if (language === Language.C) {
-        res = await c.runSource(decodedCode);
+        res = await c.runSource(decodedCode, { stdin: inputString });
       } else if (language === Language.Cpp) {
-        res = await cpp.runSource(decodedCode, { stdin: '' });
+        res = await cpp.runSource(decodedCode, { stdin: inputString });
       } else if (language === Language.Python) {
-        res = await python.runSource(decodedCode);
+        res = await python.runSource(decodedCode, { stdin: inputString });
       } else if (language === Language.Java) {
-        res = await java.runSource(decodedCode);
+        res = await java.runSource(decodedCode, { stdin: inputString });
       }
       console.log(res);
 
@@ -47,11 +40,11 @@ export class CompileService {
         memoryUsage: res.memoryUsage,
         signal: res.signal,
         stderr: res.stderr,
-        stdout: res.stdout.replace(/\r?\n$/, ''),
+        errorType: res.errorType,
+        stdout: res.stdout.replace(/\r\n/g, '\n'),
       };
     } catch (error) {
-      return;
-      // return createError('Server', 'Lỗi server, thử lại sau');
+      return createError('Server', 'Lỗi server, thử lại sau');
     }
   }
 }

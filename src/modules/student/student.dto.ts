@@ -28,4 +28,16 @@ export class UpdateStudent {
   user: string;
 }
 
-export class CreateUserOutput extends CoreOutput { }
+export class CreateUserOutput extends CoreOutput {}
+export class ListStudentOutput extends CoreOutput {
+  @ApiProperty({ description: 'list student' })
+  students?: Student[];
+}
+
+export class GetDeTailsOutput extends CoreOutput {
+  @ApiProperty({ description: 'Details Student' })
+  student?: Student;
+  numbers?:number;
+
+}
+

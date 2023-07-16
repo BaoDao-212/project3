@@ -31,6 +31,10 @@ export class RegisterUserInput {
 }
 
 export class RegisterUserOutput extends CoreOutput {}
+export class ListUserOutput extends CoreOutput {
+  @ApiProperty({ description: 'list user' })
+  users?: User[];
+}
 
 export class LoginInput {
   @ApiProperty({ description: 'username' })
@@ -68,3 +72,11 @@ export class ChangePasswordInput {
 }
 
 export class ChangePasswordOutput extends CoreOutput {}
+export class ForgotPasswordInput {
+  @ApiProperty({ description: 'username' })
+  @IsString()
+  @MinLength(1)
+  name?: string;
+}
+export class ForgotPasswordOutput extends CoreOutput {}
+
